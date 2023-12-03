@@ -1,6 +1,4 @@
-﻿using Cosmos.Core;
-using Cosmos.HAL;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using Sys = Cosmos.System;
@@ -46,46 +44,76 @@ namespace PesOS
             // Authenticate the user
             while (currentUser == null)
             {
-                Console.WriteLine("PesOS requires authentication.");
                 AuthenticateUser();
             }
 
             Console.WriteLine($"Welcome, {currentUser.Username}!");
             Console.WriteLine($"Host Identity Code: {currentUser.HostIdentityCode}");
+            Console.WriteLine("");
 
-            Console.WriteLine("PesOS booted successfully. Type a line of text to get it echoed back.");
-            Console.WriteLine("Type 'restart' to restart the system or 'shutdown' to shut it down.");
+            Console.WriteLine("PesOS booted successfully");
+            Console.WriteLine("Type 'help' to view available commands");
         }
 
         // This method contains the main execution logic
         protected override void Run()
         {
-            Console.Write("Input: ");
-            var input = Console.ReadLine();
-            Console.Write("Text typed: ");
-            Console.WriteLine(input);
+          while (true)
+          {
+                Console.WriteLine("");
+                Console.Write("Input: ");
+                var input = Console.ReadLine();
 
-            if (input.ToLower() == "restart")
-            {
-                RestartSystem();
-            }
-            else if (input.ToLower() == "shutdown")
-            {
-                ShutdownSystem();
-            }
-            else
-            {
-                Date checkDate = new Date();
-                Console.WriteLine("DATE and TIME");
-                checkDate.outputDate();
+                string[] splitted = input.Split(" ");
+                switch (splitted[0])
+                {
+                    case "help":
+                        Console.WriteLine("These are the available commands of PesOS");
+                        Console.WriteLine("help - display the available commands");
+                        Console.WriteLine("info - display information of the Operating system");
+                        Console.WriteLine("clock - display the current date and time");
+                        Console.WriteLine("clear - clear the console");
+                        Console.WriteLine("restart - automatically restarts the operating system");
+                        Console.WriteLine("shutdown - automatically shutdowns the operating system");
+                        //add more for added features
 
-                Date checkTime = new Date();
-                checkTime.outputTime();
-            }
+                        break;
+
+                    case "info":
+                        Console.WriteLine("This is a Personalized Operating System");
+                        Console.WriteLine("Created by - Alambra, Aragon, Banal, Beron, Bolocon, and De Guzman");
+                        Console.WriteLine("S.Y. 2023-2024");
+                        break;
+
+                    case "clock":
+                        DateTime clock = DateTime.Now;
+                        Console.WriteLine(clock);
+                        break;
+
+                    case "clear":
+                        Console.Clear();
+                        break;
+
+                    case "restart":
+                        Sys.Power.Reboot();
+                        break;
+                        
+                    case "shutdown":
+                        Sys.Power.Shutdown();
+                        break;
+                        
+                    default:
+                        Console.WriteLine("Command not found");
+                        break;
+                        
+                }
+
+          }
         }
 
         private void AuthenticateUser()
         {
+            Console.WriteLine("PesOS requires an authentication");
             Console.Write("Enter username: ");
             string username = Console.ReadLine();
             Console.Write("Enter password: ");
@@ -93,24 +121,16 @@ namespace PesOS
 
             currentUser = users.Find(u => u.Username == username && u.ValidatePassword(password));
 
+
             if (currentUser == null)
             {
+                Console.Clear();
                 Console.WriteLine("Authentication failed. User not found or invalid credentials. Try again.");
             }
-        }
-
-        private void RestartSystem()
-        {
-            Console.WriteLine("Restarting the system...");
-            // Additional logic for restarting the system can be added here
-            Sys.Power.Reboot();
-        }
-
-        private void ShutdownSystem()
-        {
-            Console.WriteLine("Shutting down the system...");
-            // Additional logic for shutting down the system can be added here
-            Sys.Power.Shutdown();
+            else
+            {
+                Console.Clear();
+            }
         }
     }
 
@@ -142,135 +162,4 @@ namespace PesOS
     }
 
 
-
-}
-
-public class Date
-{
-    public static string CurrentDate(bool DisplayWeekday, bool DisplayYear)
-    {
-        string Weekday = "";
-        string Month = "";
-        if (DisplayWeekday)
-        {
-            switch (RTC.DayOfTheWeek)
-            {
-                case 1:
-                    Weekday = "Monday, ";
-                    break;
-                case 2:
-                    Weekday = "Tuesday, ";
-                    break;
-                case 3:
-                    Weekday = "Wednesday, ";
-                    break;
-                case 4:
-                    Weekday = "Thursday, ";
-                    break;
-                case 5:
-                    Weekday = "Friday, ";
-                    break;
-                case 6:
-                    Weekday = "Saturday, ";
-                    break;
-                case 7:
-                    Weekday = "Sunday, ";
-                    break;
-            }
-        }
-        switch (RTC.Month)
-        {
-            case 1:
-                Month = "January";
-                break;
-            case 2:
-                Month = "February";
-                break;
-            case 3:
-                Month = "March";
-                break;
-            case 4:
-                Month = "April";
-                break;
-            case 5:
-                Month = "May";
-                break;
-            case 6:
-                Month = "June";
-                break;
-            case 7:
-                Month = "July";
-                break;
-            case 8:
-                Month = "August";
-                break;
-            case 9:
-                Month = "September";
-                break;
-            case 10:
-                Month = "October";
-                break;
-            case 11:
-                Month = "November";
-                break;
-            case 12:
-                Month = "December";
-                break;
-
-        }
-        if (DisplayYear)
-        {
-            if (DisplayWeekday)
-            {
-                return Weekday + RTC.DayOfTheMonth + "." + RTC.Month + ".20" + RTC.Year;
-            }
-            else
-            {
-                return RTC.DayOfTheMonth + "." + RTC.Month + ".20" + RTC.Year;
-            }
-        }
-        else
-        {
-            if (DisplayWeekday)
-            {
-                return Weekday + RTC.DayOfTheMonth + " " + Month;
-            }
-            else
-            {
-                return RTC.DayOfTheMonth + " " + Month;
-            }
-        }
-
-    }
-    public void outputDate()
-    {
-        Console.Write("Date:" + RTC.Month + "." + RTC.DayOfTheMonth + ".20" + RTC.Year + " ");
-    }
-    public static string CurrentTime(bool DisplaySeconds)
-    {
-        string hour = RTC.Hour.ToString();
-        if (hour.Length == 1) { hour = "0" + hour; }
-        string min = RTC.Minute.ToString();
-        if (min.Length == 1) { min = "0" + min; }
-        if (DisplaySeconds)
-        {
-            string sec = RTC.Second.ToString();
-            if (sec.Length == 1) { sec = "0" + sec; }
-            return hour + ":" + min + ":" + sec;
-        }
-        else
-        {
-            return hour + ":" + min;
-        }
-    }
-    public static string CurrentSecond()
-    {
-        string sec = RTC.Second.ToString();
-        if (sec.Length == 1) { sec = "0" + sec; }
-        return sec;
-    }
-    public void outputTime()
-    {
-        Console.Write("Time:" + RTC.Hour.ToString() + ":" + RTC.Minute.ToString() + ":" + RTC.Second.ToString() + "\n");
-    }
 }
