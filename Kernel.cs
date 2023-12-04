@@ -273,13 +273,12 @@ namespace PesOS
 
                 if (inputOperation != "+" && inputOperation != "-" && inputOperation != "*" && inputOperation != "/")
                 {
-                    Console.WriteLine("Please input a valid calculator operation.\n");
+                    Console.WriteLine("Please input a valid calculator operation.\n" + "PesOS Closed");
                     break;
-                } else
-                {
-                    Console.WriteLine($"Input two values to be ({inputOperation}).");
-                }
+                } 
 
+                Console.WriteLine($"Input two values to be ({inputOperation}).");
+                
                 Console.Write("First Value: ");
                 if (!int.TryParse(Console.ReadLine(), out firstValue))
                 {
