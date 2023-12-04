@@ -273,12 +273,12 @@ namespace PesOS
 
                 if (inputOperation != "+" && inputOperation != "-" && inputOperation != "*" && inputOperation != "/")
                 {
-                    Console.WriteLine("Please input a valid calculator operation.\n" + "PesOS Closed");
+                    Console.WriteLine("Invalid operation, PesOS Calculator Closed.");
                     break;
-                } 
+                }
 
                 Console.WriteLine($"Input two values to be ({inputOperation}).");
-                
+
                 Console.Write("First Value: ");
                 if (!int.TryParse(Console.ReadLine(), out firstValue))
                 {
@@ -315,28 +315,32 @@ namespace PesOS
                         }
                         break;
                     default:
-                        Console.WriteLine("Please input a valid calculator operation.\n");
+                        Console.WriteLine("Invalid operation, PesOS Calculator Closed.");
                         break;
                 }
 
-                Console.WriteLine("Would you like to use the calculator again? Type 'Yes' or 'No'.\n");
-                Console.Write("Input: ");
-                var reCalculate = Console.ReadLine().Trim().ToLower();
+                Console.WriteLine("\nWould you like to use the calculator again? Type 'Yes' or 'No'.\n");
 
-                if (reCalculate == "no")
+                for (int j = 1; j == 1; j = j)
                 {
-                    Console.WriteLine("PesOS Calculator Closed");
-                    i = 0;
+                    Console.Write("Input: ");
+                    var reCalculate = Console.ReadLine().Trim();
 
-                }
-                else if (reCalculate == "yes")
-                {
-                    continue;
-                }
-                else
-                {
-                    Console.WriteLine("Please input either 'Yes' or 'No' only.\n");
-                    continue;
+                    if (reCalculate == "No")
+                    {
+                        Console.WriteLine("\nPesOS Calculator Closed");
+                        i = 0; j = 0;
+
+                    }
+                    else if (reCalculate == "Yes")
+                    {
+                        i = 1; j = 0;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please input either 'Yes' or 'No' only.\n");
+                        j = 1;
+                    }
                 }
             }
         }
