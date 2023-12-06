@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using Sys = Cosmos.System;
@@ -39,7 +40,7 @@ namespace PesOS
             users.Add(new User("admin", "admin123"));
 
             ShowCenteredTitle("Innovation is the new Currency", 150);
-            ShowCenteredTitle("PesOS", 400);
+            logoLoadingScreen();
 
             // Authenticate the user
             while (currentUser == null)
@@ -228,8 +229,71 @@ namespace PesOS
             }
         }
 
-        private void AuthenticateUser()
+
+
+        private void logoLoadingScreen()
         {
+            string text = @"                                                                    
+             ++++                             +++-                      
+            ++-------                     ++-+++--- ++    +++++----     
+           ++-----------                 ++------------  ++----------   
+           +++---++++-++                 ++------+----- ++----- +-----  
+           ++-----------++++++++++++++ ++-----    ++---+ +------++      
+            ++--------  ++++   +++  +++++-----    ++-----++----------   
+            ++----++    ++++++ ++++++++  ++----++++----  +++    +-----  
+            ++---       +++    +++  +++ ++------------- ++-----++-----  
+            ++---       +++++++++++++++   +- +-----+--   ++----------   
+                                             ++--            -----      
+                                                                
+
+
+
+
+
+ 
+
+
+  Created by:                                                     Version 1.0.0
+  Alambra, Aragon, Banal, Beron, Bolocon, and De Guzman          S.Y. 2023-2024
+    ";
+
+            // Split the text into lines
+            string[] lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+            // Determine the maximum length of a line
+            int maxLength = lines.Max(line => line.Length);
+
+            // Calculate the starting position for centering horizontally and vertically
+            int x = Console.WindowWidth / 2 - maxLength / 2;
+            int y = Console.WindowHeight / 2 - lines.Length / 2;
+
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            // Loop through each line and animate
+            foreach (var line in lines)
+            {
+                // Check if the current position is within the console buffer
+                if (x >= 0 && x < Console.WindowWidth && y >= 0 && y < Console.WindowHeight)
+                {
+                    Console.SetCursorPosition(x, y);
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write(line, Console.ForegroundColor);
+                    Console.ResetColor();
+                }
+
+                Thread.Sleep(300); // Adjust the sleep duration for the desired speed
+                y++;
+            }
+
+            // Sleep for a moment before clearing the screen
+            Thread.Sleep(2800);
+
+            // Clear the screen
+            Console.Clear();
+        }
+
+        private void AuthenticateUser()
+        { 
             Console.WriteLine("PesOS requires an authentication");
             Console.Write("Enter username: ");
             string username = Console.ReadLine();
@@ -388,162 +452,162 @@ namespace PesOS
 
 
 public class User
+{
+    public string Username { get; private set; }
+    private string PasswordHash { get; set; }
+    public string HostIdentityCode { get; private set; }
+
+    public User(string username, string password)
     {
-        public string Username { get; private set; }
-        private string PasswordHash { get; set; }
-        public string HostIdentityCode { get; private set; }
-
-        public User(string username, string password)
-        {
-            Username = username;
-            PasswordHash = HashPassword(password);
-            HostIdentityCode = Guid.NewGuid().ToString();
-        }
-
-        private string HashPassword(string password)
-        {
-            // Use a secure hashing algorithm (e.g., bcrypt) in a real-world scenario
-            return password.GetHashCode().ToString();
-        }
-
-        public bool ValidatePassword(string inputPassword)
-        {
-            // Use a secure password verification mechanism in a real-world scenario
-            return PasswordHash == HashPassword(inputPassword);
-        }
+        Username = username;
+        PasswordHash = HashPassword(password);
+        HostIdentityCode = Guid.NewGuid().ToString();
     }
 
-    //This is method contains the calculator for income tax 
-    public class TaxCalculator
+    private string HashPassword(string password)
     {
-        public void CalculateTax(string incomeStr)
-        {
-            if (int.TryParse(incomeStr, out int income))
-            {
-                if (income >= 0 && income <= 250000)
-                {
-                    Console.WriteLine($"There is no tax for income that is not over 250000");
-                    Console.WriteLine($"Your Annual Income: {incomeStr}");
-                }
-                else if (income > 250000 && income <= 400000)
-                {
-                    decimal fifteenPercent = .15m * income;
-                    decimal result = income - fifteenPercent;
-                    Console.WriteLine($"15% of {incomeStr} is: {result}");
-                }
-                else if (income > 400000 && income <= 800000)
-                {
-                    decimal twentyPercent = 22500 + .20m * income;
-                    decimal result = income - twentyPercent;
-                    Console.WriteLine($"22,500 + 20% of {incomeStr} is: {result}");
-                }
-                else if (income > 800000 && income <= 2000000)
-                {
-                    decimal twentyFivePercent = 102500 + .25m * income;
-                    decimal result = income - twentyFivePercent;
-                    Console.WriteLine($"22,500 + 25% of {incomeStr} is: {result}");
-                }
-                else if (income > 2000000 && income <= 8000000)
-                {
-                    decimal thirtyPercent = 402500 + .30m * income;
-                    decimal result = income - thirtyPercent;
-                    Console.WriteLine($"402,500 + 30% of {incomeStr} is: {result}");
-                }
-                else if (income > 8000000)
-                {
-                    decimal thirtyFivePercent = 2202500 + .35m * income;
-                    decimal result = income - thirtyFivePercent;
-                    Console.WriteLine($"2,202,500 + 35% of {incomeStr} is: {result}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please enter a valid number for income.");
-            }
-
-        }
+        // Use a secure hashing algorithm (e.g., bcrypt) in a real-world scenario
+        return password.GetHashCode().ToString();
     }
 
-    //This method contains the function of a basic calculator for two variables
-    public class BasicCalculator
+    public bool ValidatePassword(string inputPassword)
     {
-        public void calculator(string inputOperation)
-        {
-            for (int i = 1; i == 1; i = i)
-            {
-                int firstValue, secondValue;
+        // Use a secure password verification mechanism in a real-world scenario
+        return PasswordHash == HashPassword(inputPassword);
+    }
+}
 
-                if (inputOperation != "+" && inputOperation != "-" && inputOperation != "*" && inputOperation != "/")
-                {
-                    Console.WriteLine("Invalid operation, PesOS Calculator Closed.");
+//This is method contains the calculator for income tax 
+public class TaxCalculator
+{
+    public void CalculateTax(string incomeStr)
+    {
+        if (int.TryParse(incomeStr, out int income))
+        {
+            if (income >= 0 && income <= 250000)
+            {
+                Console.WriteLine($"There is no tax for income that is not over 250000");
+                Console.WriteLine($"Your Annual Income: {incomeStr}");
+            }
+            else if (income > 250000 && income <= 400000)
+            {
+                decimal fifteenPercent = .15m * income;
+                decimal result = income - fifteenPercent;
+                Console.WriteLine($"15% of {incomeStr} is: {result}");
+            }
+            else if (income > 400000 && income <= 800000)
+            {
+                decimal twentyPercent = 22500 + .20m * income;
+                decimal result = income - twentyPercent;
+                Console.WriteLine($"22,500 + 20% of {incomeStr} is: {result}");
+            }
+            else if (income > 800000 && income <= 2000000)
+            {
+                decimal twentyFivePercent = 102500 + .25m * income;
+                decimal result = income - twentyFivePercent;
+                Console.WriteLine($"22,500 + 25% of {incomeStr} is: {result}");
+            }
+            else if (income > 2000000 && income <= 8000000)
+            {
+                decimal thirtyPercent = 402500 + .30m * income;
+                decimal result = income - thirtyPercent;
+                Console.WriteLine($"402,500 + 30% of {incomeStr} is: {result}");
+            }
+            else if (income > 8000000)
+            {
+                decimal thirtyFivePercent = 2202500 + .35m * income;
+                decimal result = income - thirtyFivePercent;
+                Console.WriteLine($"2,202,500 + 35% of {incomeStr} is: {result}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid input. Please enter a valid number for income.");
+        }
+
+    }
+}
+
+//This method contains the function of a basic calculator for two variables
+public class BasicCalculator
+{
+    public void calculator(string inputOperation)
+    {
+        for (int i = 1; i == 1; i = i)
+        {
+            int firstValue, secondValue;
+
+            if (inputOperation != "+" && inputOperation != "-" && inputOperation != "*" && inputOperation != "/")
+            {
+                Console.WriteLine("Invalid operation, PesOS Calculator Closed.");
+                break;
+            }
+
+            Console.WriteLine($"Input two values to be ({inputOperation}).");
+
+            Console.Write("First Value: ");
+            if (!int.TryParse(Console.ReadLine(), out firstValue))
+            {
+                Console.WriteLine("Invalid input. Please enter a valid number.\n");
+                continue;
+            }
+
+            Console.Write("Second Value: ");
+            if (!int.TryParse(Console.ReadLine(), out secondValue))
+            {
+                Console.WriteLine("Invalid input. Please enter a valid number.\n");
+                continue;
+            }
+
+            switch (inputOperation)
+            {
+                case "+":
+                    Console.WriteLine($"The Sum of {firstValue} and {secondValue} is: {firstValue + secondValue}");
                     break;
-                }
-
-                Console.WriteLine($"Input two values to be ({inputOperation}).");
-
-                Console.Write("First Value: ");
-                if (!int.TryParse(Console.ReadLine(), out firstValue))
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid number.\n");
-                    continue;
-                }
-
-                Console.Write("Second Value: ");
-                if (!int.TryParse(Console.ReadLine(), out secondValue))
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid number.\n");
-                    continue;
-                }
-
-                switch (inputOperation)
-                {
-                    case "+":
-                        Console.WriteLine($"The Sum of {firstValue} and {secondValue} is: {firstValue + secondValue}");
-                        break;
-                    case "-":
-                        Console.WriteLine($"The Difference of {firstValue} and {secondValue} is: {firstValue - secondValue}");
-                        break;
-                    case "*":
-                        Console.WriteLine($"The Product of {firstValue} and {secondValue} is: {firstValue * secondValue}");
-                        break;
-                    case "/":
-                        if (secondValue != 0)
-                        {
-                            Console.WriteLine($"The Quotient of {firstValue} and {secondValue} is: {firstValue / secondValue}");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Cannot divide by zero.");
-                        }
-                        break;
-                    default:
-                        Console.WriteLine("Invalid operation, PesOS Calculator Closed.");
-                        break;
-                }
-
-                Console.WriteLine("\nWould you like to use the calculator again? Type 'Yes' or 'No'.\n");
-
-                for (int j = 1; j == 1; j = j)
-                {
-                    Console.Write("Input: ");
-                    var reCalculate = Console.ReadLine().Trim();
-
-                    if (reCalculate == "No")
+                case "-":
+                    Console.WriteLine($"The Difference of {firstValue} and {secondValue} is: {firstValue - secondValue}");
+                    break;
+                case "*":
+                    Console.WriteLine($"The Product of {firstValue} and {secondValue} is: {firstValue * secondValue}");
+                    break;
+                case "/":
+                    if (secondValue != 0)
                     {
-                        Console.WriteLine("\nPesOS Calculator Closed");
-                        i = 0; j = 0;
-
-                    }
-                    else if (reCalculate == "Yes")
-                    {
-                        i = 1; j = 0;
+                        Console.WriteLine($"The Quotient of {firstValue} and {secondValue} is: {firstValue / secondValue}");
                     }
                     else
                     {
-                        Console.WriteLine("Please input either 'Yes' or 'No' only.\n");
-                        j = 1;
+                        Console.WriteLine("Cannot divide by zero.");
                     }
+                    break;
+                default:
+                    Console.WriteLine("Invalid operation, PesOS Calculator Closed.");
+                    break;
+            }
+
+            Console.WriteLine("\nWould you like to use the calculator again? Type 'Yes' or 'No'.\n");
+
+            for (int j = 1; j == 1; j = j)
+            {
+                Console.Write("Input: ");
+                var reCalculate = Console.ReadLine().Trim();
+
+                if (reCalculate == "No")
+                {
+                    Console.WriteLine("\nPesOS Calculator Closed");
+                    i = 0; j = 0;
+
+                }
+                else if (reCalculate == "Yes")
+                {
+                    i = 1; j = 0;
+                }
+                else
+                {
+                    Console.WriteLine("Please input either 'Yes' or 'No' only.\n");
+                    j = 1;
                 }
             }
         }
     }
+}
