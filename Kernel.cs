@@ -34,7 +34,7 @@ namespace PesOS
         {
             users = new List<User>();
             currentUser = null;
-
+            fileSystem = new FileSystem();
             // Create a sample user
             users.Add(new User("admin", "admin123"));
 
@@ -78,6 +78,12 @@ namespace PesOS
                         Console.WriteLine("clear - clear the console");
                         Console.WriteLine("restart - automatically restarts the operating system");
                         Console.WriteLine("shutdown - automatically shutdowns the operating system");
+                        Console.WriteLine("createfile - create a file");
+                        Console.WriteLine("readfile - read a file");
+                        Console.WriteLine("deletefile - delete a file");
+                        Console.WriteLine("createdirectory - create a directory");
+                        Console.WriteLine("changedirectory - change a directory");
+                        Console.WriteLine("listfiles - list all files");
                         //add more for added features
                         break;
 
@@ -151,7 +157,68 @@ namespace PesOS
                     case "shutdown":
                         Sys.Power.Shutdown();
                         break;
+                    case "createfile":
+                        Console.Write("Enter file name: ");
+                        string fileName = Console.ReadLine();
+                        Console.Write("Enter file content: ");
+                        string fileContent = Console.ReadLine();
+                        fileSystem.CreateFile(fileName, fileContent);
+                        break;
 
+                    case "readfile":
+                        Console.Write("Enter file name to read: ");
+                        string readFileName = Console.ReadLine();
+                        fileSystem.ReadFile(readFileName);
+                        break;
+
+                    case "deletefile":
+                        Console.Write("Enter file name to delete: ");
+                        string deleteFileName = Console.ReadLine();
+                        fileSystem.DeleteFile(deleteFileName);
+                        break;
+
+                    case "createdirectory":
+                        Console.Write("Enter directory name: ");
+                        string directoryName = Console.ReadLine();
+                        fileSystem.CreateDirectory(directoryName);
+                        break;
+
+                    case "changedirectory":
+                        Console.Write("Enter directory name to change to: ");
+                        string changeToDirectoryName = Console.ReadLine();
+                        fileSystem.ChangeDirectory(changeToDirectoryName);
+                        break;
+
+                    case "listfiles":
+                        fileSystem.ListFilesAndDirectories();
+                        break;
+
+                    // Add these cases to properly integrate the file system commands
+                    case "mkdir":
+                        if (splitted.Length > 1)
+                        {
+                            fileSystem.CreateDirectory(splitted[1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Usage: mkdir [directoryName]");
+                        }
+                        break;
+
+                    case "cd":
+                        if (splitted.Length > 1)
+                        {
+                            fileSystem.ChangeDirectory(splitted[1]);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Usage: cd [directoryName]");
+                        }
+                        break;
+
+                    case "ls":
+                        fileSystem.ListFilesAndDirectories();
+                        break;
                     default:
                         Console.WriteLine("Command not found");
                         break;
