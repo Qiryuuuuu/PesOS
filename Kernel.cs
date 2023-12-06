@@ -112,7 +112,7 @@ namespace PesOS
                         Console.WriteLine("-------------------------------------------------------------------------");
                         Console.WriteLine("|    ---    |    250,000   |                    0%                      |");
                         Console.WriteLine("|  250,000  |    400,000   |         15% of excess over 250,000         |");
-                        Console.WriteLine("|  250,000  |    800,000   |     22,500 + 20% of excess over 400,000    |");
+                        Console.WriteLine("|  400,000  |    800,000   |     22,500 + 20% of excess over 400,000    |");
                         Console.WriteLine("|  800,000  |   2,000,000  |     102,500 + 25% of excess over 800,000   |");
                         Console.WriteLine("| 2,000,000 |   8,000,000  |    402,500 + 30% of excess over 2,000,000  |");
                         Console.WriteLine("| 8,000,000 |      ---     |  2,202,500 + 35% of excess over 8,000,000  |");
