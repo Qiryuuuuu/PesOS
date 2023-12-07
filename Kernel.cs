@@ -194,7 +194,7 @@ namespace PesOS
                         fileSystem.ListFilesAndDirectories();
                         break;
 
-                    // Add these cases to properly integrate the file system commands
+                    // Add these cases to properly integrate the file system command
                     case "mkdir":
                         if (splitted.Length > 1)
                         {
