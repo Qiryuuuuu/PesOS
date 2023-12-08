@@ -116,52 +116,57 @@ namespace PesOS
                         Console.WriteLine(clock);
                         break;
 
-                    case "calculator":
-                        Console.Write("\nPesOS Calculator" + "\nInput your operation \n" +
-                            "Type '+' for Addition\n" +
-                            "Type '-' for Subtraction\n" +
-                            "Type '*' for Multiplication\n" +
-                            "Type '/' for Division\n" +
-                            "\nInput: ");
-                        var inputOperation = Console.ReadLine();
+                    case "calculators":
+                        Console.WriteLine("These are the available calculators");
+                        Console.WriteLine("0 - Back");
+                        Console.WriteLine("1 - Basic Calculator");
+                        Console.WriteLine("2 - Tax Calculator");
 
-                        BasicCalculator basicCalcu = new BasicCalculator();
-                        basicCalcu.calculator(inputOperation);
-                        break;
+                        Console.Write("input: ");
+                        var calInput = Console.ReadLine();
 
-                    case "taxtable":
-                        Console.WriteLine("The Income Tax Table - Individual");
-                        Console.WriteLine("-------------------------------------------------------------------------");
-                        Console.WriteLine("|   Over    | But not Over |                 Tax Rate                   |");
-                        Console.WriteLine("-------------------------------------------------------------------------");
-                        Console.WriteLine("|    ---    |    250,000   |                    0%                      |");
-                        Console.WriteLine("|  250,000  |    400,000   |         15% of excess over 250,000         |");
-                        Console.WriteLine("|  400,000  |    800,000   |     22,500 + 20% of excess over 400,000    |");
-                        Console.WriteLine("|  800,000  |   2,000,000  |     102,500 + 25% of excess over 800,000   |");
-                        Console.WriteLine("| 2,000,000 |   8,000,000  |    402,500 + 30% of excess over 2,000,000  |");
-                        Console.WriteLine("| 8,000,000 |      ---     |  2,202,500 + 35% of excess over 8,000,000  |");
-                        Console.WriteLine("-------------------------------------------------------------------------");
-                        Console.WriteLine("Department of Finance - Tax Schedule Effective January 1, 2023 and onwards");
-                        break;
-
-                    case "taxcalcu":
-                        do
+                        if (calInput == "1")
                         {
-                            Console.Write("Enter Annual Income: ");
-                            var incomeStr = Console.ReadLine();
+                            Console.Write("\nPesOS Calculator" + "\nInput your operation \n" +
+                                "Type '+' for Addition\n" +
+                                "Type '-' for Subtraction\n" +
+                                "Type '*' for Multiplication\n" +
+                                "Type '/' for Division\n" +
+                                "\nInput: ");
+                            var inputOperation = Console.ReadLine();
 
-                            TaxCalculator taxCalculator = new TaxCalculator();
-                            taxCalculator.CalculateTax(incomeStr);
+                            BasicCalculator basicCalcu = new BasicCalculator();
+                            basicCalcu.calculator(inputOperation);
+                        }
 
-                            Console.WriteLine("Do you want to calculate tax again? (Type 'Yes' or 'No')");
-                            var repeat = Console.ReadLine().Trim().ToLower();
-
-                            if (repeat != "yes" && repeat != "y")
+                        else if (calInput == "2")
+                        {
+                            Console.WriteLine("Type 'taxtable' to display the 2023 taxtable and 'taxtermino' for terminologies");
+                            do
                             {
-                                break;
-                            }
+                                Console.Write("Enter Annual Income: ");
+                                var incomeStr = Console.ReadLine();
 
-                        } while (true);
+                                TaxCalculator taxCalculator = new TaxCalculator();
+                                if (incomeStr == "taxtable")
+                                {
+                                    taxCalculator.taxTable();
+                                }else if (incomeStr == "taxtermino")
+                                {
+                                    taxCalculator.taxTerminologies();
+                                }
+                                taxCalculator.CalculateTax(incomeStr);
+
+                                Console.WriteLine("Do you want to calculate tax again? (Type 'Yes' or 'No')");
+                                var repeat = Console.ReadLine().Trim().ToLower();
+
+                                if (repeat != "yes" && repeat != "y")
+                                {
+                                    break;
+                                }
+
+                            } while (true);
+                        }
                         break;
 
                     case "clear":
@@ -746,40 +751,58 @@ public class TaxCalculator
             }
             else if (income > 250000 && income <= 400000)
             {
-                decimal fifteenPercent = .15m * income;
-                decimal result = income - fifteenPercent;
-                Console.WriteLine($"15% of {incomeStr} is: {result}");
+                decimal result = income - (.15m * (income - 250000));
+                Console.WriteLine($"Your Annual Net Income is: {result}");
             }
             else if (income > 400000 && income <= 800000)
             {
-                decimal twentyPercent = 22500 + .20m * income;
-                decimal result = income - twentyPercent;
-                Console.WriteLine($"22,500 + 20% of {incomeStr} is: {result}");
+                decimal result = income - (.20m * (income - 400000) + 22500);
+                Console.WriteLine($"Your Annual Net Income is: {result}");
             }
             else if (income > 800000 && income <= 2000000)
             {
-                decimal twentyFivePercent = 102500 + .25m * income;
-                decimal result = income - twentyFivePercent;
-                Console.WriteLine($"22,500 + 25% of {incomeStr} is: {result}");
+                decimal result = income - (.25m * (income - 800000) + 102500);
+                Console.WriteLine($"Your Annual Net Income is: {result}");
             }
             else if (income > 2000000 && income <= 8000000)
             {
-                decimal thirtyPercent = 402500 + .30m * income;
-                decimal result = income - thirtyPercent;
-                Console.WriteLine($"402,500 + 30% of {incomeStr} is: {result}");
+                decimal result = income - (.30m * (income - 2000000) + 402500);
+                Console.WriteLine($"Your Annual Net Income is: {result}");
             }
             else if (income > 8000000)
             {
-                decimal thirtyFivePercent = 2202500 + .35m * income;
-                decimal result = income - thirtyFivePercent;
-                Console.WriteLine($"2,202,500 + 35% of {incomeStr} is: {result}");
+                decimal result = income - (.35m * (income - 8000000) + 2202500);
+                Console.WriteLine($"Your Annual Net Income is: {result}");
             }
-        }
+        } 
+
+
         else
         {
-            Console.WriteLine("Invalid input. Please enter a valid number for income.");
+            Console.WriteLine("Invalid input. Please enter a valid number for income.\n");
         }
 
+    }
+
+    public void taxTable()
+    {
+        Console.WriteLine("The Income Tax Table - Individual");
+        Console.WriteLine("-------------------------------------------------------------------------");
+        Console.WriteLine("|   Over    | But not Over |                 Tax Rate                   |");
+        Console.WriteLine("-------------------------------------------------------------------------");
+        Console.WriteLine("|    ---    |    250,000   |                    0%                      |");
+        Console.WriteLine("|  250,000  |    400,000   |         15% of excess over 250,000         |");
+        Console.WriteLine("|  400,000  |    800,000   |     22,500 + 20% of excess over 400,000    |");
+        Console.WriteLine("|  800,000  |   2,000,000  |     102,500 + 25% of excess over 800,000   |");
+        Console.WriteLine("| 2,000,000 |   8,000,000  |    402,500 + 30% of excess over 2,000,000  |");
+        Console.WriteLine("| 8,000,000 |      ---     |  2,202,500 + 35% of excess over 8,000,000  |");
+        Console.WriteLine("-------------------------------------------------------------------------");
+        Console.WriteLine("Department of Finance - Tax Schedule Effective January 1, 2023 and onwards");
+    }
+
+    public void taxTerminologies()
+    {
+        Console.WriteLine("These are the terminologiesa");
     }
 }
 
