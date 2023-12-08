@@ -1,10 +1,11 @@
-﻿﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using Sys = Cosmos.System;
 using System.Buffers;
 using System.Diagnostics;
+using static BasicCalculator;
 
 namespace PesOS
 {
@@ -14,9 +15,9 @@ namespace PesOS
         private User currentUser;
         private FileSystem fileSystem;
         private MemoryManager memoryManager;
-        settings consoleSettings = new settings(); 
+        settings consoleSettings = new settings();
 
-      
+
 
         private void ShowCenteredTitle(string title, int speed)
         {
@@ -107,7 +108,7 @@ namespace PesOS
                         Console.WriteLine("allocatememory [size] - allocates a block of memory of the specified size");
                         Console.WriteLine("freememory [address] - frees the memory block at the specified address");
                         Console.WriteLine("listmemory - lists all allocated memory blocks with their addresses and sizes.");
-                        Console.WriteLine("settings - list of available customization")
+                        Console.WriteLine("settings - list of available customization");
                         //add more for added features
                         break;
 
@@ -303,38 +304,48 @@ namespace PesOS
                             Console.WriteLine("Reboot canceled.");
                         }
                         break;
-                    
+
                     case "settings":
                         Console.WriteLine("0 - Back");
                         Console.WriteLine("1 - Change Color\n");
-                       
-                        Console.Write("Input: ");
-                        var setInput = Console.Readline();
 
-                        if (setInput == "0"){
+                        Console.Write("Input: ");
+                        var setInput = Console.ReadLine();
+
+                        if (setInput == "0")
+                        {
                             Console.Clear();
                             Console.WriteLine("Welcome to PesOS");
-                        } else if(setInput == "1"){
-                            Console.WriteLine("0 - Back"); 
+                        }
+                        else if (setInput == "1")
+                        {
+                            Console.WriteLine("0 - Back");
                             Console.WriteLine("1 - Change font color");
                             Console.WriteLine("2 - Change background color");
 
-                            Console.Write("Input: ")
-                            var color = Console.Readline();
+                            Console.Write("Input: ");
+                            var color = Console.ReadLine();
 
-                            if(color == "0"){
+                            if (color == "0")
+                            {
                                 Console.Clear();
-                                Console.Writeline("Welcome to PesOS!")
+                                Console.WriteLine("Welcome to PesOS!");
                                 break;
-                            }else if (color == "1"){
+                            }
+                            else if (color == "1")
+                            {
                                 consoleSettings.fontColor();
-                            }else if (color == "2"){
+                            }
+                            else if (color == "2")
+                            {
                                 consoleSettings.backGroundColor();
 
                             }
 
-                        }else {
-                            Console.WriteLine("Pleas choose a valid option")
+                        }
+                        else
+                        {
+                            Console.WriteLine("Pleas choose a valid option");
                         }
 
                         break;
@@ -804,7 +815,7 @@ public class BasicCalculator
         }
     }
 
-// this method contains the function for the settings 
+    // this method contains the function for the settings 
     public class settings
     {
         public void fontColor()
@@ -821,7 +832,7 @@ public class BasicCalculator
             Console.Write("Choose a Font Color: ");
             var userColor = Console.ReadLine();
             Console.Clear();
-            switch(userColor)
+            switch (userColor)
             {
                 case "black":
                     Console.ForegroundColor = ConsoleColor.Black;
@@ -874,7 +885,7 @@ public class BasicCalculator
                 default:
                     Console.WriteLine($"{userColor} is not an available");
                     break;
-            }         
+            }
         }
 
 
@@ -882,7 +893,7 @@ public class BasicCalculator
         {
             ConsoleColor originalForeColor = Console.ForegroundColor;
             Console.WriteLine("Here are the available colors");
-            ConsoleColor[] consoleColors = 
+            ConsoleColor[] consoleColors =
             (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
             foreach (var color in consoleColors)
             {
