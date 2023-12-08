@@ -90,9 +90,7 @@ namespace PesOS
                         Console.WriteLine("help - display the available commands");
                         Console.WriteLine("info - display information of the Operating system");
                         Console.WriteLine("clock - display the current date and time");
-                        Console.WriteLine("calculator - enables the user to utilize a basic calculator");
-                        Console.WriteLine("taxtable - display the individual tax description in table form");
-                        Console.WriteLine("taxcalcu - calculate the user's income after tax");
+                        Console.WriteLine("calculators - display the available calculators");
                         Console.WriteLine("clear - clear the console");
                         Console.WriteLine("restart - automatically restarts the operating system");
                         Console.WriteLine("reboot - automatically reboot the operating system");
@@ -141,23 +139,18 @@ namespace PesOS
 
                         else if (calInput == "2")
                         {
-                            Console.WriteLine("Type 'taxtable' to display the 2023 taxtable and 'taxtermino' for terminologies");
+                            Console.WriteLine("\nType 'taxtable' to display the 2023 taxtable and 'taxtermino' for terminologies");
                             do
                             {
                                 Console.Write("Enter Annual Income: ");
                                 var incomeStr = Console.ReadLine();
 
                                 TaxCalculator taxCalculator = new TaxCalculator();
-                                if (incomeStr == "taxtable")
-                                {
-                                    taxCalculator.taxTable();
-                                }else if (incomeStr == "taxtermino")
-                                {
-                                    taxCalculator.taxTerminologies();
-                                }
+                           
                                 taxCalculator.CalculateTax(incomeStr);
 
                                 Console.WriteLine("Do you want to calculate tax again? (Type 'Yes' or 'No')");
+                                Console.Write("input: ");
                                 var repeat = Console.ReadLine().Trim().ToLower();
 
                                 if (repeat != "yes" && repeat != "y")
@@ -405,6 +398,11 @@ namespace PesOS
                             Console.WriteLine("Reboot canceled.");
                         }
                         break;
+
+                    case "sysinfo":
+                        SysInfo sysDes = new SysInfo();
+                        sysDes.SystemInfo();
+                        break;
                     default:
                         Console.WriteLine("Command not found");
                         break;
@@ -419,16 +417,16 @@ namespace PesOS
         private void logoLoadingScreen()
         {
             string text = @"                                                                    
-             ++++                                +++-                      
-            ++-------                        ++-+++--- ++    +++++----     
-           ++-----------                    ++------------  ++----------   
-           +++---   --++                    ++------+----- ++----- +-----  
-           ++----------- +++++++ +++++++  ++-----    ++---+ +------++      
-            ++--------   ++++    ++   +++ ++-----    ++-----++----------   
-            ++----++     ++++++  ++++++++   ++----++++----  +++    +-----  
-            ++---        +++     +++   ++  ++------------- ++-----++-----  
-            ++---        +++++++ ++++++++    +- +-----+--   ++----------   
-                                                 ++--           -----      
+             ++++                             +++-                      
+            ++-------                     ++-+++--- ++    +++++----     
+           ++-----------                 ++------------  ++----------   
+           +++---++++-++                 ++------+----- ++----- +-----  
+           ++-----------++++++++++++++ ++-----    ++---+ +------++      
+            ++--------  ++++   +++  +++++-----    ++-----++----------   
+            ++----++    ++++++ ++++++++  ++----++++----  +++    +-----  
+            ++---       +++    +++  +++ ++------------- ++-----++-----  
+            ++---       +++++++++++++++   +- +-----+--   ++----------   
+                                             ++--            -----      
                                                                 
 
 
@@ -752,29 +750,49 @@ public class TaxCalculator
             else if (income > 250000 && income <= 400000)
             {
                 decimal result = income - (.15m * (income - 250000));
+                decimal witholdingTax = income - result;
+                Console.WriteLine($"Your Witholding: {witholdingTax}");
                 Console.WriteLine($"Your Annual Net Income is: {result}");
             }
             else if (income > 400000 && income <= 800000)
             {
                 decimal result = income - (.20m * (income - 400000) + 22500);
+                decimal witholdingTax = income - result;
+                Console.WriteLine($"Your Witholding: {witholdingTax}");
                 Console.WriteLine($"Your Annual Net Income is: {result}");
             }
             else if (income > 800000 && income <= 2000000)
             {
                 decimal result = income - (.25m * (income - 800000) + 102500);
+                decimal witholdingTax = income - result;
+                Console.WriteLine($"Your Witholding: {witholdingTax}");
                 Console.WriteLine($"Your Annual Net Income is: {result}");
             }
             else if (income > 2000000 && income <= 8000000)
             {
                 decimal result = income - (.30m * (income - 2000000) + 402500);
+                decimal witholdingTax = income - result;
+                Console.WriteLine($"Your Witholding: {witholdingTax}");
                 Console.WriteLine($"Your Annual Net Income is: {result}");
             }
             else if (income > 8000000)
             {
                 decimal result = income - (.35m * (income - 8000000) + 2202500);
+                decimal witholdingTax = income - result;
+                Console.WriteLine($"Your Witholding: {witholdingTax}");
                 Console.WriteLine($"Your Annual Net Income is: {result}");
             }
         } 
+        
+        else if (incomeStr == "taxtable")
+        {
+            taxTable();
+        }
+        
+        else if (incomeStr == "taxtermino")
+        {
+            taxTerminologies();
+        }
 
 
         else
@@ -786,7 +804,7 @@ public class TaxCalculator
 
     public void taxTable()
     {
-        Console.WriteLine("The Income Tax Table - Individual");
+        Console.WriteLine("\nThe Income Tax Table - Individual");
         Console.WriteLine("-------------------------------------------------------------------------");
         Console.WriteLine("|   Over    | But not Over |                 Tax Rate                   |");
         Console.WriteLine("-------------------------------------------------------------------------");
@@ -797,12 +815,16 @@ public class TaxCalculator
         Console.WriteLine("| 2,000,000 |   8,000,000  |    402,500 + 30% of excess over 2,000,000  |");
         Console.WriteLine("| 8,000,000 |      ---     |  2,202,500 + 35% of excess over 8,000,000  |");
         Console.WriteLine("-------------------------------------------------------------------------");
-        Console.WriteLine("Department of Finance - Tax Schedule Effective January 1, 2023 and onwards");
+        Console.WriteLine("Department of Finance - Tax Schedule Effective January 1, 2023 and onwards\n");
     }
 
     public void taxTerminologies()
     {
-        Console.WriteLine("These are the terminologiesa");
+        Console.WriteLine("As per the Republic of the Philippines - Bureau of Internal Revenue (BIR), Philippine Statistics Authority (PSA), and Business News Daily, the following terms shall be defined as:\r\n");
+        Console.WriteLine("Strata - From population, strata is the division of people with common characteristics, such as range of annual gross income. ");
+        Console.WriteLine("Annual Gross Income - Regardless of the source, Gross Income is the summation of income for the whole year.");
+        Console.WriteLine("Annual Net Income - After deducting one's Withholding Tax from the Annual Gross Income, the Annual Net Income shall be the amount of money earned for the whole year. ");
+        Console.WriteLine("Withholding Tax - It is the tax that shall not be limited to tax being withheld from employee, income payments, and Government managements including Value Added Taxes (VAT) and Government Money Payments (GMP).");
     }
 }
 
@@ -1088,6 +1110,17 @@ public class BasicCalculator
         }
     }
 
+public class SysInfo
+    {
+        public void SystemInfo()
+        {
+            Console.WriteLine("OS Name   : PesOS");
+            Console.WriteLine("Version   : 1.0.0");
+            Console.WriteLine("Memory    : 256MB");
+            Console.WriteLine("Processors:   1  ");
+            Console.WriteLine("IP Address:      ");
+        }
+    }
 
 
 }
