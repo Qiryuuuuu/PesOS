@@ -97,12 +97,7 @@ namespace PesOS
                         Console.WriteLine("restart - automatically restarts the operating system");
                         Console.WriteLine("reboot - automatically reboot the operating system");
                         Console.WriteLine("shutdown - automatically shutdowns the operating system");
-                        Console.WriteLine("createfile - create a file");
-                        Console.WriteLine("readfile - read a file");
-                        Console.WriteLine("deletefile - delete a file");
-                        Console.WriteLine("createdirectory - create a directory");
-                        Console.WriteLine("changedirectory - change a directory");
-                        Console.WriteLine("listfiles - list all files");
+                        Console.WriteLine("file - displays the available command for file system");
                         Console.WriteLine("allocatememory [size] - allocates a block of memory of the specified size");
                         Console.WriteLine("freememory [address] - frees the memory block at the specified address");
                         Console.WriteLine("listmemory - lists all allocated memory blocks with their addresses and sizes.");
@@ -189,40 +184,70 @@ namespace PesOS
                             Console.WriteLine("Shutdown canceled.");
                         }
                         break;
-                    case "createfile":
-                        Console.Write("Enter file name: ");
-                        string fileName = Console.ReadLine();
-                        Console.Write("Enter file content: ");
-                        string fileContent = Console.ReadLine();
-                        fileSystem.CreateFile(fileName, fileContent);
-                        break;
 
-                    case "readfile":
-                        Console.Write("Enter file name to read: ");
-                        string readFileName = Console.ReadLine();
-                        fileSystem.ReadFile(readFileName);
-                        break;
+                    case "file":
+                        Console.WriteLine("These are the available file system commands");
+                        Console.WriteLine("0 - Back");
+                        Console.WriteLine("1 - Create File");
+                        Console.WriteLine("2 - Read File");
+                        Console.WriteLine("3 - Delete File");
+                        Console.WriteLine("4 - Create Directory");
+                        Console.WriteLine("5 - Change Directory");
+                        Console.WriteLine("6 - List Files");
 
-                    case "deletefile":
-                        Console.Write("Enter file name to delete: ");
-                        string deleteFileName = Console.ReadLine();
-                        fileSystem.DeleteFile(deleteFileName);
-                        break;
+                        Console.Write("input: ");
+                        var userInput = Console.ReadLine();
+                        if (userInput == "0")
+                        {
+                            break;
+                        }
 
-                    case "createdirectory":
-                        Console.Write("Enter directory name: ");
-                        string directoryName = Console.ReadLine();
-                        fileSystem.CreateDirectory(directoryName);
-                        break;
+                        else if (userInput == "1")
+                        {
+                            Console.Write("Enter File Name: ");
+                            string filename = Console.ReadLine();
+                            Console.Write("Enter File Content: ");
+                            string fileContent = Console.ReadLine();
+                            fileSystem.CreateFile(filename, fileContent);
+                        }
 
-                    case "changedirectory":
-                        Console.Write("Enter directory name to change to: ");
-                        string changeToDirectoryName = Console.ReadLine();
-                        fileSystem.ChangeDirectory(changeToDirectoryName);
-                        break;
+                        else if (userInput == "2")
+                        {
+                            Console.Write("Enter file name to read: ");
+                            string readFileName = Console.ReadLine();
+                            fileSystem.ReadFile(readFileName);
+                        }
 
-                    case "listfiles":
-                        fileSystem.ListFilesAndDirectories();
+                        else if (userInput == "3")
+                        {
+                            Console.Write("Enter file name to delete:");
+                            string deleteFileName = Console.ReadLine();
+                            fileSystem.DeleteFile(deleteFileName);
+                        }
+
+                        else if (userInput == "4")
+                        {
+                            Console.Write("Enter directory name: ");
+                            string directoryName = Console.ReadLine();
+                            fileSystem.CreateDirectory(directoryName);
+                        }
+
+                        else if (userInput == "5")
+                        {
+                            Console.Write("Enter directory name to change to: ");
+                            string changeToDirectoryName = Console.ReadLine();
+                            fileSystem.ChangeDirectory(changeToDirectoryName);
+                        }
+
+                        else if (userInput == "6"){
+                            fileSystem.ListFilesAndDirectories();
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Choose valid option");
+                        }
+
                         break;
 
                     // Add these cases to properly integrate the file system command
@@ -328,7 +353,7 @@ namespace PesOS
 
                                 // Call the FontColor method to change the font color
                                 mySettings.FontColor(new string[] { fontColor });
-
+                                
                             }
                             else if (color == "2")
                             {
