@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using Sys = Cosmos.System;
+using System.Buffers;
+using System.Diagnostics;
 
 namespace PesOS
 {
@@ -11,6 +13,9 @@ namespace PesOS
         private List<User> users;
         private User currentUser;
         private FileSystem fileSystem;
+        private MemoryManager memoryManager;
+      
+
         private void ShowCenteredTitle(string title, int speed)
         {
             Console.Clear();
@@ -29,6 +34,15 @@ namespace PesOS
             Thread.Sleep(2000);
             Console.Clear();
         }
+        private void Reboot()
+        {
+            Console.WriteLine("Rebooting PesOS...");
+            Sys.Power.Reboot();
+            // Restart the initial part of your operating system
+            BeforeRun();
+            // Indicate that the reboot is complete
+            Console.WriteLine("PesOS rebooted successfully");
+        }
 
         // This method is called before the main execution starts
         protected override void BeforeRun()
@@ -36,6 +50,8 @@ namespace PesOS
             users = new List<User>();
             currentUser = null;
             fileSystem = new FileSystem();
+            // Initialize Memory Manager with a pool size of 1024 bytes
+            memoryManager = new MemoryManager(1024);
             // Create a sample user
             users.Add(new User("admin", "admin123"));
 
@@ -78,6 +94,7 @@ namespace PesOS
                         Console.WriteLine("taxcalcu - calculate the user's income after tax");
                         Console.WriteLine("clear - clear the console");
                         Console.WriteLine("restart - automatically restarts the operating system");
+                        Console.WriteLine("reboot - automatically reboot the operating system");
                         Console.WriteLine("shutdown - automatically shutdowns the operating system");
                         Console.WriteLine("createfile - create a file");
                         Console.WriteLine("readfile - read a file");
@@ -85,6 +102,9 @@ namespace PesOS
                         Console.WriteLine("createdirectory - create a directory");
                         Console.WriteLine("changedirectory - change a directory");
                         Console.WriteLine("listfiles - list all files");
+                        Console.WriteLine("allocatememory [size] - allocates a block of memory of the specified size");
+                        Console.WriteLine("freememory [address] - frees the memory block at the specified address");
+                        Console.WriteLine("listmemory - lists all allocated memory blocks with their addresses and sizes.");
                         //add more for added features
                         break;
 
@@ -156,7 +176,16 @@ namespace PesOS
                         break;
 
                     case "shutdown":
-                        Sys.Power.Shutdown();
+                        Console.Write("Are you sure you want to shut down? Type 'Yes' or 'No': ");
+                        var shutdownConfirmation = Console.ReadLine().Trim().ToLower();
+                        if (shutdownConfirmation == "yes" || shutdownConfirmation == "y")
+                        {
+                            Sys.Power.Shutdown();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Shutdown canceled.");
+                        }
                         break;
                     case "createfile":
                         Console.Write("Enter file name: ");
@@ -219,6 +248,57 @@ namespace PesOS
 
                     case "ls":
                         fileSystem.ListFilesAndDirectories();
+                        break;
+                    case "allocatememory":
+                        if (splitted.Length > 1)
+                        {
+                            int size;
+                            if (int.TryParse(splitted[1], out size))
+                            {
+                                int address = memoryManager.Allocate(size);
+                                Console.WriteLine($"Allocated {size} bytes at address {address}.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Usage: allocatememory [size]");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Usage: allocatememory [size]");
+                        }
+                        break;
+
+                    case "freememory":
+                        if (splitted.Length > 1)
+                        {
+                            int address;
+                            if (int.TryParse(splitted[1], out address))
+                            {
+                                memoryManager.Free(address);
+                                Console.WriteLine($"Freed memory at address {address}.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Usage: freememory [address]");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Usage: freememory [address]");
+                        }
+                        break;
+                    case "reboot":
+                        Console.Write("Are you sure you want to reboot? Type 'Yes' or 'No': ");
+                        var rebootConfirmation = Console.ReadLine().Trim().ToLower();
+                        if (rebootConfirmation == "yes" || rebootConfirmation == "y")
+                        {
+                            Reboot();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Reboot canceled.");
+                        }
                         break;
                     default:
                         Console.WriteLine("Command not found");
@@ -293,7 +373,7 @@ namespace PesOS
         }
 
         private void AuthenticateUser()
-        { 
+        {
             Console.WriteLine("PesOS requires an authentication");
             Console.Write("Enter username: ");
             string username = Console.ReadLine();
@@ -449,7 +529,82 @@ namespace PesOS
     }
 }
 
+public class MemoryManager
+{
+    private byte[] memoryPool;
+    private List<MemoryBlock> allocatedBlocks;
 
+    public MemoryManager(int poolSize)
+    {
+        memoryPool = new byte[poolSize];
+        allocatedBlocks = new List<MemoryBlock>();
+    }
+
+    public int Allocate(int size)
+    {
+        // Find a free block in the memory pool
+        int index = FindFreeBlock(size);
+
+        // Allocate memory if a suitable block is found
+        if (index != -1)
+        {
+            MemoryBlock block = new MemoryBlock(index, size);
+            allocatedBlocks.Add(block);
+            Console.WriteLine($"Allocated {size} bytes at address {index}.");
+            return index;
+        }
+        else
+        {
+            Console.WriteLine("Memory allocation failed. Not enough free space.");
+            return -1;
+        }
+    }
+
+    public void Free(int address)
+    {
+        // Find and remove the block associated with the given address
+        MemoryBlock block = allocatedBlocks.Find(b => b.Address == address);
+        if (block != null)
+        {
+            allocatedBlocks.Remove(block);
+            Console.WriteLine($"Freed memory at address {address}.");
+        }
+        else
+        {
+            Console.WriteLine($"Memory at address {address} not found.");
+        }
+    }
+
+    private int FindFreeBlock(int size)
+    {
+        // Simple first-fit allocation strategy
+        for (int i = 0; i < memoryPool.Length - size; i++)
+        {
+            if (!allocatedBlocks.Any(b => b.Contains(i, size)))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+
+public class MemoryBlock
+{
+    public int Address { get; private set; }
+    public int Size { get; private set; }
+
+    public MemoryBlock(int address, int size)
+    {
+        Address = address;
+        Size = size;
+    }
+
+    public bool Contains(int address, int size)
+    {
+        return address >= Address && address + size <= Address + Size;
+    }
+}
 
 public class User
 {
