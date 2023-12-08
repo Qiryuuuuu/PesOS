@@ -820,11 +820,11 @@ public class TaxCalculator
 
     public void taxTerminologies()
     {
-        Console.WriteLine("As per the Republic of the Philippines - Bureau of Internal Revenue (BIR), Philippine Statistics Authority (PSA), and Business News Daily, the following terms shall be defined as:\r\n");
-        Console.WriteLine("Strata - From population, strata is the division of people with common characteristics, such as range of annual gross income. ");
-        Console.WriteLine("Annual Gross Income - Regardless of the source, Gross Income is the summation of income for the whole year.");
-        Console.WriteLine("Annual Net Income - After deducting one's Withholding Tax from the Annual Gross Income, the Annual Net Income shall be the amount of money earned for the whole year. ");
-        Console.WriteLine("Withholding Tax - It is the tax that shall not be limited to tax being withheld from employee, income payments, and Government managements including Value Added Taxes (VAT) and Government Money Payments (GMP).");
+        Console.WriteLine("\n\nAs per the Republic of the Philippines - Bureau of Internal Revenue (BIR), Philippine Statistics Authority (PSA), and Business News Daily, the following terms shall be defined as:");
+        Console.WriteLine("Strata - It is the division of population with common characteristics, such as range of annual gross income. ");
+        Console.WriteLine("Annual Gross Income - Regardless of source, Gross Income is the total income for the whole year.");
+        Console.WriteLine("Annual Net Income - Annual Net Income is the amount  earned for the whole year, having Withholding Tax deducted. ");
+        Console.WriteLine("Withholding Tax - It is the tax being deducted from employee, income payments, and Government managements.\n");
     }
 }
 
