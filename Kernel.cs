@@ -328,6 +328,7 @@ namespace PesOS
 
                                 // Call the FontColor method to change the font color
                                 mySettings.FontColor(new string[] { fontColor });
+
                             }
                             else if (color == "2")
                             {
@@ -341,6 +342,7 @@ namespace PesOS
                                 var backgroundColor = Console.ReadLine();
 
                                 mySettings.BackgroundColor(new string[] { backgroundColor });
+                                Console.Clear();
 
                             }
                             else
@@ -1003,7 +1005,6 @@ public class BasicCalculator
                     case "darkmagenta":
                         Console.BackgroundColor = ConsoleColor.DarkMagenta;
                         Console.WriteLine("The console's color has now changed to Magenta");
-                        Console.Clear();
                         break;
 
                     case "cyan":
@@ -1014,7 +1015,6 @@ public class BasicCalculator
                     case "darkcyan":
                         Console.BackgroundColor = ConsoleColor.DarkCyan;
                         Console.WriteLine("The console's color has now changed to Magenta");
-                        Console.Clear();
                         break;
 
                     default:
