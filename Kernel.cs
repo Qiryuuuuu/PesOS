@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using Sys = Cosmos.System;
 using System.Buffers;
 using System.Diagnostics;
+using static BasicCalculator;
 
 namespace PesOS
 {
@@ -14,7 +15,7 @@ namespace PesOS
         private User currentUser;
         private FileSystem fileSystem;
         private MemoryManager memoryManager;
-      
+
 
         private void ShowCenteredTitle(string title, int speed)
         {
@@ -105,6 +106,7 @@ namespace PesOS
                         Console.WriteLine("allocatememory [size] - allocates a block of memory of the specified size");
                         Console.WriteLine("freememory [address] - frees the memory block at the specified address");
                         Console.WriteLine("listmemory - lists all allocated memory blocks with their addresses and sizes.");
+                        Console.WriteLine("settings - list of available modifications");
                         //add more for added features
                         break;
 
@@ -288,6 +290,77 @@ namespace PesOS
                             Console.WriteLine("Usage: freememory [address]");
                         }
                         break;
+
+
+                    case "settings":
+                        string[] availableColors = { "white", "black", "gray", "yellow", "red", "blue", "green", "magenta", "cyan",
+                         "darkred", "darkblue", "darkgreen", "darkmagenta", "darkcyan" };
+
+                        Console.WriteLine("0 - Back");
+                        Console.WriteLine("1 - Change color\n");
+                        Console.Write("input: ");
+                        var setInput = Console.ReadLine();
+
+                        if (setInput == "1")
+                        {
+                            Console.WriteLine("0 - Back");
+                            Console.WriteLine("1 - Change Font Color");
+                            Console.WriteLine("2 - Change Background Color");
+
+                            Console.Write("input: ");
+                            var color = Console.ReadLine();
+
+                            if (color == "0")
+                            {
+                                Console.Clear();
+                                Console.WriteLine("Welcome to PesOS");
+                                break;
+                            }
+                            else if (color == "1")
+                            {
+                                settings mySettings = new settings();
+
+                                Console.WriteLine("Available Colors:");
+                                settings.PrintAvailableColors(availableColors);
+
+                                Console.Write("Enter the desired font color: ");
+                                var fontColor = Console.ReadLine();
+
+                                // Call the FontColor method to change the font color
+                                mySettings.FontColor(new string[] { fontColor });
+                            }
+                            else if (color == "2")
+                            {
+                                // Code for changing background color goes here
+                                settings mySettings = new settings();
+
+                                Console.WriteLine("Available Colors:");
+                                settings.PrintAvailableColors(availableColors);
+
+                                Console.Write("Enter the desired font color: ");
+                                var backgroundColor = Console.ReadLine();
+
+                                mySettings.BackgroundColor(new string[] { backgroundColor });
+
+                            }
+                            else
+                            {
+                                Console.WriteLine("Please choose a valid option");
+                            }
+                        }
+                        else if (setInput == "0")
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Welcome to PesOS");
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Please choose a valid option");
+                        }
+                        break;
+
+
                     case "reboot":
                         Console.Write("Are you sure you want to reboot? Type 'Yes' or 'No': ");
                         var rebootConfirmation = Console.ReadLine().Trim().ToLower();
@@ -765,4 +838,208 @@ public class BasicCalculator
             }
         }
     }
+
+    public class settings
+    {
+        public void FontColor(string[] args)
+        {
+            string[] availableColors = { "white", "black", "gray", "yellow", "red", "blue", "green", "magenta", "cyan",
+                    "darkred", "darkblue", "darkgreen", "darkmagenta", "darkcyan" };
+            string response = "";
+
+            if (args.Length > 0)
+            {
+                switch (args[0])
+                {
+                    case "white":
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("The console's color has now changed to White");
+                        break;
+
+                    case "black":
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine("The console's color has now changed to Magenta");
+                        break;
+
+                    case "gray":
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.WriteLine("The console's color has now changed to Gray");
+                        break;
+
+                    case "yellow":
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("The console's color has now changed to Yellow");
+                        break;
+
+                    case "red":
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("The console's color has now changed to Red");
+                        break;
+
+                    case "darkred":
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine("The console's color has now changed to Cyan");
+                        break;
+
+                    case "blue":
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine("The console's color has now changed to Blue");
+                        break;
+
+                    case "darkblue":
+                        Console.ForegroundColor = ConsoleColor.DarkBlue;
+                        Console.WriteLine("The console's color has now changed to Dark Blue");
+                        break;
+
+                    case "green":
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("The console's color has now changed to Green");
+                        break;
+
+                    case "darkgreen":
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.WriteLine("The console's color has now changed to Dark Green");
+                        break;
+
+                    case "magenta":
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine("The console's color has now changed to Magenta");
+                        break;
+
+                    case "darkmagenta":
+                        Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                        Console.WriteLine("The console's color has now changed to Magenta");
+                        break;
+
+                    case "cyan":
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("The console's color has now changed to Cyan");
+                        break;
+
+                    case "darkcyan":
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
+                        Console.WriteLine("The console's color has now changed to Magenta");
+                        break;
+
+                    default:
+                        response = "The color \"" + args[0] + "\" is not available";
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Please provide a color as an argument.");
+                PrintAvailableColors(availableColors);
+            }
+
+
+        }
+   
+        public void BackgroundColor(string[] args)
+        {
+            string[] availableColors = {"white", "black", "gray", "yellow", "red", "blue", "green", "magenta", "cyan",
+                    "darkred", "darkblue", "darkgreen", "darkmagenta", "darkcyan" };
+            string response = "";
+
+            if (args.Length > 0)
+            {
+                switch (args[0])
+                {
+                    case "white":
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.WriteLine("The console's color has now changed to White");
+                        break;
+
+                    case "black":
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.WriteLine("The console's color has now changed to Magenta");
+                        break;
+
+                    case "gray":
+                        Console.BackgroundColor = ConsoleColor.Gray;
+                        Console.WriteLine("The console's color has now changed to Gray");
+                        break;
+
+                    case "yellow":
+                        Console.BackgroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("The console's color has now changed to Yellow");
+                        break;
+
+                    case "red":
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.WriteLine("The console's color has now changed to Red");
+                        break;
+
+                    case "darkred":
+                        Console.BackgroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine("The console's color has now changed to Cyan");
+                        break;
+
+                    case "blue":
+                        Console.BackgroundColor = ConsoleColor.Blue;
+                        Console.WriteLine("The console's color has now changed to Blue");
+                        break;
+
+                    case "darkblue":
+                        Console.BackgroundColor = ConsoleColor.DarkBlue;
+                        Console.WriteLine("The console's color has now changed to Dark Blue");
+                        break;
+
+                    case "green":
+                        Console.BackgroundColor = ConsoleColor.Green;
+                        Console.WriteLine("The console's color has now changed to Green");
+                        break;
+
+                    case "darkgreen":
+                        Console.BackgroundColor = ConsoleColor.DarkGreen;
+                        Console.WriteLine("The console's color has now changed to Dark Green");
+                        break;
+
+                    case "magenta":
+                        Console.BackgroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine("The console's color has now changed to Magenta");
+                        break;
+
+                    case "darkmagenta":
+                        Console.BackgroundColor = ConsoleColor.DarkMagenta;
+                        Console.WriteLine("The console's color has now changed to Magenta");
+                        Console.Clear();
+                        break;
+
+                    case "cyan":
+                        Console.BackgroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("The console's color has now changed to Cyan");
+                        break;
+
+                    case "darkcyan":
+                        Console.BackgroundColor = ConsoleColor.DarkCyan;
+                        Console.WriteLine("The console's color has now changed to Magenta");
+                        Console.Clear();
+                        break;
+
+                    default:
+                        response = "The color \"" + args[0] + "\" is not available";
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Please provide a color as an argument.");
+                PrintAvailableColors(availableColors);
+            }
+
+
+        }
+        public static void PrintAvailableColors(string[] colors)
+        {
+            Console.WriteLine("You can choose between these colors:");
+            foreach (var color in colors)
+            {
+                Console.WriteLine($"\t{color}");
+            }
+        }
+    }
+
+
+
 }
