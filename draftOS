@@ -307,46 +307,51 @@ namespace PesOS
 
                     case "settings":
                         Console.WriteLine("0 - Back");
-                        Console.WriteLine("1 - Change Color\n");
-
-                        Console.Write("Input: ");
+                        Console.WriteLine("1 - Change color\n");
+                        Console.Write("input: ");
                         var setInput = Console.ReadLine();
 
-                        if (setInput == "0")
-                        {
-                            Console.Clear();
-                            Console.WriteLine("Welcome to PesOS");
-                        }
-                        else if (setInput == "1")
+                        if (setInput == "1")
                         {
                             Console.WriteLine("0 - Back");
-                            Console.WriteLine("1 - Change font color");
-                            Console.WriteLine("2 - Change background color");
+                            Console.WriteLine("1 - Change Font Color");
+                            Console.WriteLine("2 - Change Background Color");
 
-                            Console.Write("Input: ");
+                            Console.Write("input: ");
                             var color = Console.ReadLine();
 
                             if (color == "0")
                             {
                                 Console.Clear();
-                                Console.WriteLine("Welcome to PesOS!");
+                                Console.WriteLine("Welcome to PesOS");
                                 break;
                             }
+
                             else if (color == "1")
                             {
                                 consoleSettings.fontColor();
                             }
+
                             else if (color == "2")
                             {
                                 consoleSettings.backGroundColor();
-
                             }
-
+                            else
+                            {
+                                Console.WriteLine("Please choose a valid option");
+                            }
+                        }
+                        else if (setInput == "0")
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Welcome to PesOS");
+                            break;
                         }
                         else
                         {
-                            Console.WriteLine("Pleas choose a valid option");
+                            Console.WriteLine("Please choose a valid option");
                         }
+                        break;
 
                         break;
                     default:
@@ -815,6 +820,7 @@ public class BasicCalculator
         }
     }
 
+    // this method contains the function for the settings 
     // this method contains the function for the settings 
     public class settings
     {
