@@ -74,7 +74,7 @@ namespace PesOS
                 AuthenticateUser();
             }
             Console.WriteLine($"Welcome, {currentUser.Username}!");
-            Console.WriteLine("You have successfully logged-in to PesOS");
+            Console.WriteLine("You have successfully logged-in to PesOS.");
             Console.WriteLine("Type 'help' to view available commands");
         }
 
