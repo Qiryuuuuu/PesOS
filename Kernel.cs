@@ -18,7 +18,7 @@ namespace PesOS
         private User currentUser;
         private FileSystem fileSystem;
         private MemoryManager memoryManager;
-       
+
         private void ShowCenteredTitle(string title, int speed)
         {
             Console.Clear();
@@ -37,7 +37,7 @@ namespace PesOS
             Thread.Sleep(2000);
             Console.Clear();
         }
-  
+
         private void Reboot()
         {
             Console.WriteLine("Rebooting PesOS...");
@@ -74,7 +74,7 @@ namespace PesOS
                 AuthenticateUser();
             }
             Console.WriteLine($"Welcome, {currentUser.Username}!");
-            Console.WriteLine("User is successfully logged-in");
+            Console.WriteLine("You have successfully logged-in to PesOS");
             Console.WriteLine("Type 'help' to view available commands");
         }
 
@@ -425,16 +425,16 @@ namespace PesOS
         private void logoLoadingScreen()
         {
             string text = @"                                                                    
-             ++++                              +++-                      
-            ++-------                      ++-+++--- ++     +++++----     
-           ++-----------                  ++------------   ++----------   
-           +++--   ---++                  ++------+-----  ++----- +-----  
+             ++++                               +++-                      
+            ++-------                        ++-+++---++      +++++----     
+           ++-----------                  ++------------    ++----------   
+           +++--   ---++                  ++------+------  ++----- +-----  
            ++----------- ++++++ +++++++  ++-----    ++---+  +------++      
             ++--------   +++    +++   ++ ++-----    ++----- ++----------   
             ++----++     ++++++ ++++++++   ++----++++----   +++    +-----  
             ++---        +++    ++   +++  ++-------------  ++-----++-----  
             ++---        ++++++  +++++++    +- +-----+--    ++----------   
-                                              ++--            -----      
+                                                ++--            -----      
                                                                 
 
 
@@ -486,7 +486,7 @@ namespace PesOS
         private void AuthenticateUser()
         {
             Console.WriteLine("PesOS requires an authentication");
-            
+
             int maxAttempts = 5;
             int attempts = 0;
 
@@ -502,22 +502,27 @@ namespace PesOS
                 if (currentUser == null)
                 {
                     attempts++;
+                    Console.Beep(800, 150);
+                    Console.Beep(600, 200);
+
                     Console.Clear();
                     Console.WriteLine($"Authentication Failed. Attempts remaining: {maxAttempts - attempts}");
 
                     if (attempts == maxAttempts)
                     {
-                        Console.WriteLine("Max attempts is reached. System will restart");
+                        Console.WriteLine("Max attempts has been reached. System will restart");
                         Reboot();
                     }
                 }
                 else
                 {
+                    Console.Beep(600, 250);
+                    Console.Beep(800, 300);
                     Console.Clear();
                     break;
                 }
             }
-    
+
         }
     }
 
@@ -1146,4 +1151,4 @@ public class BasicCalculator
         }
 
     }
- } 
+}
