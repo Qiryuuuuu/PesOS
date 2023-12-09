@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
@@ -38,6 +38,9 @@ namespace PesOS
         private void Reboot()
         {
             Console.WriteLine("Rebooting PesOS...");
+            Console.Beep(400, 300);
+            Console.Beep(800, 400);
+            Console.Beep(600, 500);
             Sys.Power.Reboot();
             // Restart the initial part of your operating system
             BeforeRun();
@@ -57,6 +60,9 @@ namespace PesOS
             users.Add(new User("admin", "admin123"));
 
             ShowCenteredTitle("Innovation is the new Currency", 150);
+            Console.Beep(400, 300);
+            Console.Beep(800, 400);
+            Console.Beep(600, 500);
             logoLoadingScreen();
 
             // Authenticate the user
@@ -86,38 +92,32 @@ namespace PesOS
                 switch (splitted[0])
                 {
                     case "help":
-                        Console.WriteLine("These are the available commands of PesOS");
-                        Console.WriteLine("help - display the available commands");
-                        Console.WriteLine("info - display information of the Operating system");
-                        Console.WriteLine("clock - display the current date and time");
-                        Console.WriteLine("calculators - display the available calculators");
-                        Console.WriteLine("clear - clear the console");
+                        Console.WriteLine("These are the available commands of PesOS:");
+                        Console.WriteLine("help - displays a list of available commands");
+                        Console.WriteLine("sysinfo - displays the system information of PesOS");
+                        Console.WriteLine("clock - displays the current date and time");
+                        Console.WriteLine("tax - displays the available tax features");
+                        Console.WriteLine("clear - clears the command line");
                         Console.WriteLine("restart - automatically restarts the operating system");
-                        Console.WriteLine("reboot - automatically reboot the operating system");
                         Console.WriteLine("shutdown - automatically shutdowns the operating system");
                         Console.WriteLine("file - displays the available command for file system");
                         Console.WriteLine("allocatememory [size] - allocates a block of memory of the specified size");
                         Console.WriteLine("freememory [address] - frees the memory block at the specified address");
-                        Console.WriteLine("listmemory - lists all allocated memory blocks with their addresses and sizes.");
-                        Console.WriteLine("settings - list of available modifications");
+                        Console.WriteLine("listmemory - displays lists all allocated memory blocks with their addresses and sizes.");
+                        Console.WriteLine("settings - displays the available system modifications");
                         //add more for added features
                         break;
 
-                    case "info":
-                        Console.WriteLine("This is a Personalized Operating System");
-                        Console.WriteLine("Created by - Alambra, Aragon, Banal, Beron, Bolocon, and De Guzman");
-                        Console.WriteLine("S.Y. 2023-2024");
-                        break;
 
                     case "clock":
                         DateTime clock = DateTime.Now;
-                        Console.WriteLine(clock);
+                        Console.WriteLine("\n The current date and time is: " + clock);
                         break;
 
-                    case "calculators":
-                        Console.WriteLine("These are the available calculators");
+                    case "tax":
+                        Console.WriteLine("These are the available tax features");
                         Console.WriteLine("0 - Back");
-                        Console.WriteLine("1 - Basic Calculator");
+                        Console.WriteLine("1 - PesOS Calculator");
                         Console.WriteLine("2 - Tax Calculator");
 
                         Console.Write("input: ");
@@ -139,17 +139,17 @@ namespace PesOS
 
                         else if (calInput == "2")
                         {
-                            Console.WriteLine("\nType 'taxtable' to display the 2023 taxtable and 'taxtermino' for terminologies");
+                            Console.WriteLine("\nType 'taxtable' to display the 2023 taxtable and 'taxterms' for terminologies");
                             do
                             {
                                 Console.Write("Enter Annual Income: ");
                                 var incomeStr = Console.ReadLine();
 
                                 TaxCalculator taxCalculator = new TaxCalculator();
-                           
+
                                 taxCalculator.CalculateTax(incomeStr);
 
-                                Console.WriteLine("Do you want to calculate tax again? (Type 'Yes' or 'No')");
+                                Console.WriteLine("Do you want to calculate your tax? (Type 'Yes' or 'No')");
                                 Console.Write("input: ");
                                 var repeat = Console.ReadLine().Trim().ToLower();
 
@@ -166,15 +166,14 @@ namespace PesOS
                         Console.Clear();
                         break;
 
-                    case "restart":
-                        Sys.Power.Reboot();
-                        break;
-
                     case "shutdown":
                         Console.Write("Are you sure you want to shut down? Type 'Yes' or 'No': ");
                         var shutdownConfirmation = Console.ReadLine().Trim().ToLower();
                         if (shutdownConfirmation == "yes" || shutdownConfirmation == "y")
                         {
+                            Console.Beep(800, 300);
+                            Console.Beep(600, 400); 
+                            Console.Beep(400, 500);
                             Sys.Power.Shutdown();
                         }
                         else
@@ -237,7 +236,8 @@ namespace PesOS
                             fileSystem.ChangeDirectory(changeToDirectoryName);
                         }
 
-                        else if (userInput == "6"){
+                        else if (userInput == "6")
+                        {
                             fileSystem.ListFilesAndDirectories();
                         }
 
@@ -351,7 +351,7 @@ namespace PesOS
 
                                 // Call the FontColor method to change the font color
                                 mySettings.FontColor(new string[] { fontColor });
-                                
+
                             }
                             else if (color == "2")
                             {
@@ -386,8 +386,8 @@ namespace PesOS
                         break;
 
 
-                    case "reboot":
-                        Console.Write("Are you sure you want to reboot? Type 'Yes' or 'No': ");
+                    case "restart":
+                        Console.Write("Are you sure you want to restart? Type 'Yes' or 'No': ");
                         var rebootConfirmation = Console.ReadLine().Trim().ToLower();
                         if (rebootConfirmation == "yes" || rebootConfirmation == "y")
                         {
@@ -417,16 +417,16 @@ namespace PesOS
         private void logoLoadingScreen()
         {
             string text = @"                                                                    
-             ++++                             +++-                      
-            ++-------                     ++-+++--- ++    +++++----     
-           ++-----------                 ++------------  ++----------   
-           +++---++++-++                 ++------+----- ++----- +-----  
-           ++-----------++++++++++++++ ++-----    ++---+ +------++      
-            ++--------  ++++   +++  +++++-----    ++-----++----------   
-            ++----++    ++++++ ++++++++  ++----++++----  +++    +-----  
-            ++---       +++    +++  +++ ++------------- ++-----++-----  
-            ++---       +++++++++++++++   +- +-----+--   ++----------   
-                                             ++--            -----      
+             ++++                              +++-                      
+            ++-------                      ++-+++--- ++    +++++----     
+           ++-----------                  ++------------  ++----------   
+           +++--   ---++                  ++------+----- ++----- +-----  
+           ++-----------++++++ +++++++  ++-----    ++---+ +------++      
+            ++--------  +++    +++   ++ ++-----    ++-----++----------   
+            ++----++    ++++++ ++++++++   ++----++++----  +++    +-----  
+            ++---       +++    ++   +++  ++------------- ++-----++-----  
+            ++---       ++++++  +++++++    +- +-----+--   ++----------   
+                                              ++--           -----      
                                                                 
 
 
@@ -758,7 +758,7 @@ public class TaxCalculator
             {
                 decimal result = income - (.20m * (income - 400000) + 22500);
                 decimal witholdingTax = income - result;
-                Console.WriteLine($"Your Witholding: {witholdingTax}");
+                Console.WriteLine($"Your Withholding Tax: {witholdingTax}");
                 Console.WriteLine($"Your Annual Net Income is: {result}");
             }
             else if (income > 800000 && income <= 2000000)
@@ -782,14 +782,14 @@ public class TaxCalculator
                 Console.WriteLine($"Your Witholding: {witholdingTax}");
                 Console.WriteLine($"Your Annual Net Income is: {result}");
             }
-        } 
-        
+        }
+
         else if (incomeStr == "taxtable")
         {
             taxTable();
         }
-        
-        else if (incomeStr == "taxtermino")
+
+        else if (incomeStr == "taxterms")
         {
             taxTerminologies();
         }
@@ -821,7 +821,7 @@ public class TaxCalculator
     public void taxTerminologies()
     {
         Console.WriteLine("\n\nAs per the Republic of the Philippines - Bureau of Internal Revenue (BIR), Philippine Statistics Authority (PSA), and Business News Daily, the following terms shall be defined as:");
-        Console.WriteLine("Strata - It is the division of population with common characteristics, such as range of annual gross income. ");
+        Console.WriteLine("\nStrata - It is the division of population with common characteristics, such as range of annual gross income. ");
         Console.WriteLine("Annual Gross Income - Regardless of source, Gross Income is the total income for the whole year.");
         Console.WriteLine("Annual Net Income - Annual Net Income is the amount  earned for the whole year, having Withholding Tax deducted. ");
         Console.WriteLine("Withholding Tax - It is the tax being deducted from employee, income payments, and Government managements.\n");
@@ -885,7 +885,7 @@ public class BasicCalculator
                     break;
             }
 
-            Console.WriteLine("\nWould you like to use the calculator again? Type 'Yes' or 'No'.\n");
+            Console.WriteLine("\nWould you like to use PesOS calculator again? Type 'Yes' or 'No'.\n");
 
             for (int j = 1; j == 1; j = j)
             {
@@ -1006,7 +1006,7 @@ public class BasicCalculator
 
 
         }
-   
+
         public void BackgroundColor(string[] args)
         {
             string[] availableColors = {"white", "black", "gray", "yellow", "red", "blue", "green", "magenta", "cyan",
@@ -1110,10 +1110,12 @@ public class BasicCalculator
         }
     }
 
-public class SysInfo
+    public class SysInfo
     {
         public void SystemInfo()
         {
+            Console.WriteLine("As the world embarks into the era of digitalization, innovation is the new currency. PLM EduSkolars' Operating System, or PesOS, is a personalized operating system developed by Alambra, J., Aragon, P., Banal, D., Beron, A., Bolocon, J., and De Guzman, J. Moreover, PesOS aims to innovate the lives of Filipinos through the aspect of tax calculation.");
+            Console.WriteLine("S.Y. 2023-2024\n");
             Console.WriteLine("OS Name   : PesOS");
             Console.WriteLine("Version   : 1.0.0");
             Console.WriteLine("Memory    : 256MB");
