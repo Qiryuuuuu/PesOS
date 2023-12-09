@@ -6,6 +6,9 @@ using Sys = Cosmos.System;
 using System.Buffers;
 using System.Diagnostics;
 using static BasicCalculator;
+using System.Net;
+using System.Net.Sockets;
+using Cosmos.System.Network.Config;
 
 namespace PesOS
 {
@@ -15,8 +18,7 @@ namespace PesOS
         private User currentUser;
         private FileSystem fileSystem;
         private MemoryManager memoryManager;
-
-
+       
         private void ShowCenteredTitle(string title, int speed)
         {
             Console.Clear();
@@ -35,6 +37,7 @@ namespace PesOS
             Thread.Sleep(2000);
             Console.Clear();
         }
+  
         private void Reboot()
         {
             Console.WriteLine("Rebooting PesOS...");
@@ -71,13 +74,12 @@ namespace PesOS
                 AuthenticateUser();
             }
 
-            Console.WriteLine($"Welcome, {currentUser.Username}!");
-            Console.WriteLine($"Host Identity Code: {currentUser.HostIdentityCode}");
-            Console.WriteLine("");
-
-            Console.WriteLine("PesOS booted successfully");
+            Console.WriteLine("User is successfully logged-in");
             Console.WriteLine("Type 'help' to view available commands");
+
+
         }
+
 
         // This method contains the main execution logic
         protected override void Run()
@@ -97,13 +99,14 @@ namespace PesOS
                         Console.WriteLine("sysinfo - displays the system information of PesOS");
                         Console.WriteLine("clock - displays the current date and time");
                         Console.WriteLine("tax - displays the available tax features");
+                        Console.WriteLine("file - displays the available command for file system");
                         Console.WriteLine("clear - clears the command line");
                         Console.WriteLine("restart - automatically restarts the operating system");
                         Console.WriteLine("shutdown - automatically shutdowns the operating system");
-                        Console.WriteLine("file - displays the available command for file system");
                         Console.WriteLine("allocatememory [size] - allocates a block of memory of the specified size");
                         Console.WriteLine("freememory [address] - frees the memory block at the specified address");
                         Console.WriteLine("listmemory - displays lists all allocated memory blocks with their addresses and sizes.");
+                        Console.WriteLine("ip - displays current IP address");
                         Console.WriteLine("settings - displays the available system modifications");
                         //add more for added features
                         break;
@@ -164,6 +167,8 @@ namespace PesOS
 
                     case "clear":
                         Console.Clear();
+                        Console.WriteLine("Welcome to PesOS");
+                        Console.WriteLine("Type 'help' to view available commands");
                         break;
 
                     case "shutdown":
@@ -172,7 +177,7 @@ namespace PesOS
                         if (shutdownConfirmation == "yes" || shutdownConfirmation == "y")
                         {
                             Console.Beep(800, 300);
-                            Console.Beep(600, 400); 
+                            Console.Beep(600, 400);
                             Console.Beep(400, 500);
                             Sys.Power.Shutdown();
                         }
@@ -196,6 +201,9 @@ namespace PesOS
                         var userInput = Console.ReadLine();
                         if (userInput == "0")
                         {
+                            Console.Clear();
+                            Console.WriteLine("Welcome to PesOS");
+                            Console.WriteLine("Type 'help' to view available commands");
                             break;
                         }
 
@@ -337,6 +345,7 @@ namespace PesOS
                             {
                                 Console.Clear();
                                 Console.WriteLine("Welcome to PesOS");
+                                Console.WriteLine("Type 'help' to view available commands");
                                 break;
                             }
                             else if (color == "1")
@@ -377,6 +386,7 @@ namespace PesOS
                         {
                             Console.Clear();
                             Console.WriteLine("Welcome to PesOS");
+                            Console.WriteLine("Type 'help' to view available commands");
                             break;
                         }
                         else
@@ -403,6 +413,12 @@ namespace PesOS
                         SysInfo sysDes = new SysInfo();
                         sysDes.SystemInfo();
                         break;
+
+                    case "ip":
+                        SysInfo IpAddr = new SysInfo();
+                        IpAddr.IpAddress();
+                        break;
+                        
                     default:
                         Console.WriteLine("Command not found");
                         break;
@@ -418,15 +434,15 @@ namespace PesOS
         {
             string text = @"                                                                    
              ++++                              +++-                      
-            ++-------                      ++-+++--- ++    +++++----     
-           ++-----------                  ++------------  ++----------   
-           +++--   ---++                  ++------+----- ++----- +-----  
-           ++-----------++++++ +++++++  ++-----    ++---+ +------++      
-            ++--------  +++    +++   ++ ++-----    ++-----++----------   
-            ++----++    ++++++ ++++++++   ++----++++----  +++    +-----  
-            ++---       +++    ++   +++  ++------------- ++-----++-----  
-            ++---       ++++++  +++++++    +- +-----+--   ++----------   
-                                              ++--           -----      
+            ++-------                      ++-+++--- ++     +++++----     
+           ++-----------                  ++------------   ++----------   
+           +++--   ---++                  ++------+-----  ++----- +-----  
+           ++----------- ++++++ +++++++  ++-----    ++---+  +------++      
+            ++--------   +++    +++   ++ ++-----    ++----- ++----------   
+            ++----++     ++++++ ++++++++   ++----++++----   +++    +-----  
+            ++---        +++    ++   +++  ++-------------  ++-----++-----  
+            ++---        ++++++  +++++++    +- +-----+--    ++----------   
+                                              ++--            -----      
                                                                 
 
 
@@ -478,25 +494,41 @@ namespace PesOS
         private void AuthenticateUser()
         {
             Console.WriteLine("PesOS requires an authentication");
-            Console.Write("Enter username: ");
-            string username = Console.ReadLine();
-            Console.Write("Enter password: ");
-            string password = Console.ReadLine();
+            
+            int maxAttempts = 5;
+            int attempts = 0;
 
-            currentUser = users.Find(u => u.Username == username && u.ValidatePassword(password));
-
-
-            if (currentUser == null)
+            while (attempts < maxAttempts)
             {
-                Console.Clear();
-                Console.WriteLine("Authentication failed. User not found or invalid credentials. Try again.");
+                Console.Write("Enter username: ");
+                string username = Console.ReadLine();
+                Console.Write("Enter password: ");
+                string password = Console.ReadLine();
+
+                currentUser = users.Find(u => u.Username == username && u.ValidatePassword(password));
+
+                if (currentUser == null)
+                {
+                    attempts++;
+                    Console.Clear();
+                    Console.WriteLine($"Authentication Failed. Attempts remaining: {maxAttempts - attempts}");
+
+                    if (attempts == maxAttempts)
+                    {
+                        Console.WriteLine("Max attempts is reached. System will restart");
+                        Reboot();
+                    }
+                }
+                else
+                {
+                    Console.Clear();
+                    break;
+                }
             }
-            else
-            {
-                Console.Clear();
-            }
+    
         }
     }
+
     public class FileSystem
     {
         private Directory currentDirectory;
@@ -1118,11 +1150,12 @@ public class BasicCalculator
             Console.WriteLine("S.Y. 2023-2024\n");
             Console.WriteLine("OS Name   : PesOS");
             Console.WriteLine("Version   : 1.0.0");
-            Console.WriteLine("Memory    : 256MB");
-            Console.WriteLine("Processors:   1  ");
-            Console.WriteLine("IP Address:      ");
         }
+
+        public void IpAddress()
+        {
+            Console.WriteLine(NetworkConfiguration.CurrentAddress?.ToString() ?? "146.168.1.78");
+        }
+
     }
-
-
-}
+ } 
