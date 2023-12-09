@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
@@ -38,9 +38,9 @@ namespace PesOS
         private void Reboot()
         {
             Console.WriteLine("Rebooting PesOS...");
-            Console.Beep(400, 300);
-            Console.Beep(800, 400);
-            Console.Beep(600, 500);
+            Console.Beep(800, 300);
+            Console.Beep(600, 400);
+            Console.Beep(400, 500);
             Sys.Power.Reboot();
             // Restart the initial part of your operating system
             BeforeRun();
@@ -111,7 +111,7 @@ namespace PesOS
 
                     case "clock":
                         DateTime clock = DateTime.Now;
-                        Console.WriteLine("\n The current date and time is: " + clock);
+                        Console.WriteLine("\nThe current date and time is: " + clock);
                         break;
 
                     case "tax":
