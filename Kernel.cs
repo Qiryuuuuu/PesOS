@@ -73,12 +73,9 @@ namespace PesOS
             {
                 AuthenticateUser();
             }
-
-            Console.WriteLine($"");
-            Console.WriteLine("You have successfully logged-in to PesOS.");
+            Console.WriteLine($"Welcome, {currentUser.Username}!");
+            Console.WriteLine("User is successfully logged-in");
             Console.WriteLine("Type 'help' to view available commands");
-
-
         }
 
 
@@ -107,7 +104,6 @@ namespace PesOS
                         Console.WriteLine("allocatememory [size] - allocates a block of memory of the specified size");
                         Console.WriteLine("freememory [address] - frees the memory block at the specified address");
                         Console.WriteLine("listmemory - displays lists all allocated memory blocks with their addresses and sizes.");
-                        Console.WriteLine("ip - displays current IP address");
                         Console.WriteLine("settings - displays the available system modifications");
                         //add more for added features
                         break;
@@ -415,11 +411,6 @@ namespace PesOS
                         sysDes.SystemInfo();
                         break;
 
-                    case "ip":
-                        SysInfo IpAddr = new SysInfo();
-                        IpAddr.IpAddress();
-                        break;
-                        
                     default:
                         Console.WriteLine("Command not found");
                         break;
@@ -1151,10 +1142,6 @@ public class BasicCalculator
             Console.WriteLine("S.Y. 2023-2024\n");
             Console.WriteLine("OS Name   : PesOS");
             Console.WriteLine("Version   : 1.0.0");
-        }
-
-        public void IpAddress()
-        {
             Console.WriteLine(NetworkConfiguration.CurrentAddress?.ToString() ?? "146.168.1.78");
         }
 
