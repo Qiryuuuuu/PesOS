@@ -1,14 +1,9 @@
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Sys = Cosmos.System;
-using System.Buffers;
-using System.Diagnostics;
-using static BasicCalculator;
-using System.Net;
-using System.Net.Sockets;
-using Cosmos.System.Network.Config;
+
 
 namespace PesOS
 {
@@ -77,8 +72,17 @@ namespace PesOS
             Console.WriteLine("You have successfully logged-in to PesOS.");
             Console.WriteLine("Type 'help' to view available commands");
         }
+        private bool LogoutAndAuthenticate()
+        {
+            currentUser.Logout();
+            currentUser = null;
 
+            // Authenticate the user again
+            AuthenticateUser();
 
+            return currentUser != null;
+        }
+        
         // This method contains the main execution logic
         protected override void Run()
         {
@@ -101,9 +105,7 @@ namespace PesOS
                         Console.WriteLine("clear - clears the command line");
                         Console.WriteLine("restart - automatically restarts the operating system");
                         Console.WriteLine("shutdown - automatically shutdowns the operating system");
-                        Console.WriteLine("allocatememory [size] - allocates a block of memory of the specified size");
-                        Console.WriteLine("freememory [address] - frees the memory block at the specified address");
-                        Console.WriteLine("listmemory - displays lists all allocated memory blocks with their addresses and sizes.");
+                        Console.WriteLine("user - displays the available command for user profile");
                         Console.WriteLine("settings - displays the available system modifications");
                         //add more for added features
                         break;
@@ -185,7 +187,7 @@ namespace PesOS
                         break;
 
                     case "file":
-                        Console.WriteLine("These are the available file system commands");
+                        Console.WriteLine("These are the available file system commands:");
                         Console.WriteLine("0 - Back");
                         Console.WriteLine("1 - Create File");
                         Console.WriteLine("2 - Read File");
@@ -195,8 +197,8 @@ namespace PesOS
                         Console.WriteLine("6 - List Files");
 
                         Console.Write("input: ");
-                        var userInput = Console.ReadLine();
-                        if (userInput == "0")
+                        var fileInput = Console.ReadLine();
+                        if (fileInput == "0")
                         {
                             Console.Clear();
                             Console.WriteLine("Welcome to PesOS");
@@ -204,7 +206,7 @@ namespace PesOS
                             break;
                         }
 
-                        else if (userInput == "1")
+                        else if (fileInput == "1")
                         {
                             Console.Write("Enter File Name: ");
                             string filename = Console.ReadLine();
@@ -213,35 +215,35 @@ namespace PesOS
                             fileSystem.CreateFile(filename, fileContent);
                         }
 
-                        else if (userInput == "2")
+                        else if (fileInput == "2")
                         {
                             Console.Write("Enter file name to read: ");
                             string readFileName = Console.ReadLine();
                             fileSystem.ReadFile(readFileName);
                         }
 
-                        else if (userInput == "3")
+                        else if (fileInput == "3")
                         {
                             Console.Write("Enter file name to delete:");
                             string deleteFileName = Console.ReadLine();
                             fileSystem.DeleteFile(deleteFileName);
                         }
 
-                        else if (userInput == "4")
+                        else if (fileInput == "4")
                         {
                             Console.Write("Enter directory name: ");
                             string directoryName = Console.ReadLine();
                             fileSystem.CreateDirectory(directoryName);
                         }
 
-                        else if (userInput == "5")
+                        else if (fileInput == "5")
                         {
                             Console.Write("Enter directory name to change to: ");
                             string changeToDirectoryName = Console.ReadLine();
                             fileSystem.ChangeDirectory(changeToDirectoryName);
                         }
 
-                        else if (userInput == "6")
+                        else if (fileInput == "6")
                         {
                             fileSystem.ListFilesAndDirectories();
                         }
@@ -252,6 +254,8 @@ namespace PesOS
                         }
 
                         break;
+
+                    
 
                     // Add these cases to properly integrate the file system command
                     case "mkdir":
@@ -279,6 +283,7 @@ namespace PesOS
                     case "ls":
                         fileSystem.ListFilesAndDirectories();
                         break;
+
                     case "allocatememory":
                         if (splitted.Length > 1)
                         {
@@ -317,6 +322,77 @@ namespace PesOS
                         {
                             Console.WriteLine("Usage: freememory [address]");
                         }
+                        break;
+
+                    case "user":
+                        Console.WriteLine("These are the available user commands:");
+                        Console.WriteLine("0 - Back");
+                        Console.WriteLine("1 - Change Username");
+                        Console.WriteLine("2 - Change Password");
+                        Console.WriteLine("3 - Change Host Identity");
+                        Console.WriteLine("4 - Display User Info");
+                        Console.WriteLine("5 - Create New User");
+                        Console.WriteLine("6 - Logout");
+
+                        Console.Write("input: ");
+                        var userInput = Console.ReadLine();
+                        if (userInput == "0")
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Welcome to PesOS");
+                            Console.WriteLine("Type 'help' to view available commands");
+                            break;
+                        }
+
+                        else if (userInput == "1")
+                        {
+                            Console.Write("Enter new username: ");
+                            string newUsername = Console.ReadLine();
+                            currentUser.ChangeUsername(newUsername);
+                        }
+
+                        else if (userInput == "2")
+                        {
+                            Console.Write("Enter new password: ");
+                            string newPassword = Console.ReadLine();
+                            currentUser.ChangePassword(newPassword);
+                        }
+
+                        else if (userInput == "3")
+                        {
+                            currentUser.ChangeHostIdentity();
+                        }
+
+                        else if (userInput == "4")
+                        {
+                            DisplayUserInfo();
+                        }
+
+                        else if (userInput == "5")
+                        {
+                            Console.Write("Enter new username: ");
+                            string createUsername = Console.ReadLine();
+                            Console.Write("Enter password: ");
+                            string createPassword = Console.ReadLine();
+
+                            // Create a new user and log them in
+                            currentUser = User.CreateUser(createUsername, createPassword);
+                            Console.WriteLine($"User {createUsername} created and logged in.");
+                        }
+
+                        else if (userInput == "6")
+                        {
+                            if (LogoutAndAuthenticate())
+                            {
+                                Console.WriteLine($"Welcome back, {currentUser.Username}!");
+                            }
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Choose valid option");
+                        }
+
                         break;
 
 
@@ -524,631 +600,23 @@ namespace PesOS
             }
 
         }
-    }
-
-    public class FileSystem
-    {
-        private Directory currentDirectory;
-
-        public FileSystem()
+        private void DisplayUserInfo()
         {
-            currentDirectory = new Directory("root");
-        }
-
-        public void CreateFile(string fileName, string content)
-        {
-            File newFile = new File(fileName, content);
-            currentDirectory.AddFile(newFile);
-            Console.WriteLine($"File '{fileName}' created successfully.");
-        }
-
-        public void ReadFile(string fileName)
-        {
-            File file = currentDirectory.GetFile(fileName);
-            if (file != null)
+            if (currentUser != null)
             {
-                Console.WriteLine($"Content of '{fileName}':");
-                Console.WriteLine(file.Content);
+                currentUser.DisplayUserInfo();
             }
             else
             {
-                Console.WriteLine($"File '{fileName}' not found.");
+                Console.WriteLine("No user is currently logged in.");
             }
+
+
         }
 
-        public void DeleteFile(string fileName)
-        {
-            if (currentDirectory.RemoveFile(fileName))
-            {
-                Console.WriteLine($"File '{fileName}' deleted successfully.");
-            }
-            else
-            {
-                Console.WriteLine($"File '{fileName}' not found.");
-            }
-        }
 
-        public void CreateDirectory(string directoryName)
-        {
-            Directory newDirectory = new Directory(directoryName);
-            currentDirectory.AddDirectory(newDirectory);
-            Console.WriteLine($"Directory '{directoryName}' created successfully.");
-        }
-
-        public void ChangeDirectory(string directoryName)
-        {
-            Directory newDirectory = currentDirectory.GetDirectory(directoryName);
-            if (newDirectory != null)
-            {
-                currentDirectory = newDirectory;
-                Console.WriteLine($"Changed to directory '{directoryName}'.");
-            }
-            else
-            {
-                Console.WriteLine($"Directory '{directoryName}' not found.");
-            }
-        }
-
-        public void ListFilesAndDirectories()
-        {
-            Console.WriteLine($"Contents of '{currentDirectory.Name}':");
-            foreach (File file in currentDirectory.Files)
-            {
-                Console.WriteLine($"File: {file.Name}");
-            }
-            foreach (Directory directory in currentDirectory.Subdirectories)
-            {
-                Console.WriteLine($"Directory: {directory.Name}");
-            }
-        }
-    }
-
-    public class Directory
-    {
-        public string Name { get; private set; }
-        public List<File> Files { get; private set; }
-        public List<Directory> Subdirectories { get; private set; }
-
-        public Directory(string name)
-        {
-            Name = name;
-            Files = new List<File>();
-            Subdirectories = new List<Directory>();
-        }
-
-        public void AddFile(File file)
-        {
-            Files.Add(file);
-        }
-
-        public File GetFile(string fileName)
-        {
-            return Files.Find(f => f.Name == fileName);
-        }
-
-        public bool RemoveFile(string fileName)
-        {
-            File fileToRemove = GetFile(fileName);
-            if (fileToRemove != null)
-            {
-                Files.Remove(fileToRemove);
-                return true;
-            }
-            return false;
-        }
-
-        public void AddDirectory(Directory directory)
-        {
-            Subdirectories.Add(directory);
-        }
-
-        public Directory GetDirectory(string directoryName)
-        {
-            return Subdirectories.Find(d => d.Name == directoryName);
-        }
-    }
-
-    public class File
-    {
-        public string Name { get; private set; }
-        public string Content { get; set; }
-
-        public File(string name, string content)
-        {
-            Name = name;
-            Content = content;
-        }
     }
 }
 
-public class MemoryManager
-{
-    private byte[] memoryPool;
-    private List<MemoryBlock> allocatedBlocks;
 
-    public MemoryManager(int poolSize)
-    {
-        memoryPool = new byte[poolSize];
-        allocatedBlocks = new List<MemoryBlock>();
-    }
 
-    public int Allocate(int size)
-    {
-        // Find a free block in the memory pool
-        int index = FindFreeBlock(size);
-
-        // Allocate memory if a suitable block is found
-        if (index != -1)
-        {
-            MemoryBlock block = new MemoryBlock(index, size);
-            allocatedBlocks.Add(block);
-            Console.WriteLine($"Allocated {size} bytes at address {index}.");
-            return index;
-        }
-        else
-        {
-            Console.WriteLine("Memory allocation failed. Not enough free space.");
-            return -1;
-        }
-    }
-
-    public void Free(int address)
-    {
-        // Find and remove the block associated with the given address
-        MemoryBlock block = allocatedBlocks.Find(b => b.Address == address);
-        if (block != null)
-        {
-            allocatedBlocks.Remove(block);
-            Console.WriteLine($"Freed memory at address {address}.");
-        }
-        else
-        {
-            Console.WriteLine($"Memory at address {address} not found.");
-        }
-    }
-
-    private int FindFreeBlock(int size)
-    {
-        // Simple first-fit allocation strategy
-        for (int i = 0; i < memoryPool.Length - size; i++)
-        {
-            if (!allocatedBlocks.Any(b => b.Contains(i, size)))
-            {
-                return i;
-            }
-        }
-        return -1;
-    }
-}
-
-public class MemoryBlock
-{
-    public int Address { get; private set; }
-    public int Size { get; private set; }
-
-    public MemoryBlock(int address, int size)
-    {
-        Address = address;
-        Size = size;
-    }
-
-    public bool Contains(int address, int size)
-    {
-        return address >= Address && address + size <= Address + Size;
-    }
-}
-
-public class User
-{
-    public string Username { get; private set; }
-    private string PasswordHash { get; set; }
-    public string HostIdentityCode { get; private set; }
-
-    public User(string username, string password)
-    {
-        Username = username;
-        PasswordHash = HashPassword(password);
-        HostIdentityCode = Guid.NewGuid().ToString();
-    }
-
-    private string HashPassword(string password)
-    {
-        // Use a secure hashing algorithm (e.g., bcrypt) in a real-world scenario
-        return password.GetHashCode().ToString();
-    }
-
-    public bool ValidatePassword(string inputPassword)
-    {
-        // Use a secure password verification mechanism in a real-world scenario
-        return PasswordHash == HashPassword(inputPassword);
-    }
-}
-
-//This is method contains the calculator for income tax 
-public class TaxCalculator
-{
-    public void CalculateTax(string incomeStr)
-    {
-        if (int.TryParse(incomeStr, out int income))
-        {
-            if (income >= 0 && income <= 250000)
-            {
-                Console.WriteLine($"There is no tax for income that is not over 250000");
-                Console.WriteLine($"Your Annual Income: {incomeStr}");
-            }
-            else if (income > 250000 && income <= 400000)
-            {
-                decimal result = income - (.15m * (income - 250000));
-                decimal witholdingTax = income - result;
-                Console.WriteLine($"Your Witholding: {witholdingTax}");
-                Console.WriteLine($"Your Annual Net Income is: {result}");
-            }
-            else if (income > 400000 && income <= 800000)
-            {
-                decimal result = income - (.20m * (income - 400000) + 22500);
-                decimal witholdingTax = income - result;
-                Console.WriteLine($"Your Withholding Tax: {witholdingTax}");
-                Console.WriteLine($"Your Annual Net Income is: {result}");
-            }
-            else if (income > 800000 && income <= 2000000)
-            {
-                decimal result = income - (.25m * (income - 800000) + 102500);
-                decimal witholdingTax = income - result;
-                Console.WriteLine($"Your Witholding: {witholdingTax}");
-                Console.WriteLine($"Your Annual Net Income is: {result}");
-            }
-            else if (income > 2000000 && income <= 8000000)
-            {
-                decimal result = income - (.30m * (income - 2000000) + 402500);
-                decimal witholdingTax = income - result;
-                Console.WriteLine($"Your Witholding: {witholdingTax}");
-                Console.WriteLine($"Your Annual Net Income is: {result}");
-            }
-            else if (income > 8000000)
-            {
-                decimal result = income - (.35m * (income - 8000000) + 2202500);
-                decimal witholdingTax = income - result;
-                Console.WriteLine($"Your Witholding: {witholdingTax}");
-                Console.WriteLine($"Your Annual Net Income is: {result}");
-            }
-        }
-
-        else if (incomeStr == "taxtable")
-        {
-            taxTable();
-        }
-
-        else if (incomeStr == "taxterms")
-        {
-            taxTerminologies();
-        }
-
-
-        else
-        {
-            Console.WriteLine("Invalid input. Please enter a valid number for income.\n");
-        }
-
-    }
-
-    public void taxTable()
-    {
-        Console.WriteLine("\nThe Income Tax Table - Individual");
-        Console.WriteLine("-------------------------------------------------------------------------");
-        Console.WriteLine("|   Over    | But not Over |                 Tax Rate                   |");
-        Console.WriteLine("-------------------------------------------------------------------------");
-        Console.WriteLine("|    ---    |    250,000   |                    0%                      |");
-        Console.WriteLine("|  250,000  |    400,000   |         15% of excess over 250,000         |");
-        Console.WriteLine("|  400,000  |    800,000   |     22,500 + 20% of excess over 400,000    |");
-        Console.WriteLine("|  800,000  |   2,000,000  |     102,500 + 25% of excess over 800,000   |");
-        Console.WriteLine("| 2,000,000 |   8,000,000  |    402,500 + 30% of excess over 2,000,000  |");
-        Console.WriteLine("| 8,000,000 |      ---     |  2,202,500 + 35% of excess over 8,000,000  |");
-        Console.WriteLine("-------------------------------------------------------------------------");
-        Console.WriteLine("Department of Finance - Tax Schedule Effective January 1, 2023 and onwards\n");
-    }
-
-    public void taxTerminologies()
-    {
-        Console.WriteLine("\n\nAs per the Republic of the Philippines - Bureau of Internal Revenue (BIR), Philippine Statistics Authority (PSA), and Business News Daily, the following terms shall be defined as:");
-        Console.WriteLine("\nStrata - It is the division of population with common characteristics, such as range of annual gross income. ");
-        Console.WriteLine("Annual Gross Income - Regardless of source, Gross Income is the total income for the whole year.");
-        Console.WriteLine("Annual Net Income - Annual Net Income is the amount  earned for the whole year, having Withholding Tax deducted. ");
-        Console.WriteLine("Withholding Tax - It is the tax being deducted from employee, income payments, and Government managements.\n");
-    }
-}
-
-//This method contains the function of a basic calculator for two variables
-public class BasicCalculator
-{
-    public void calculator(string inputOperation)
-    {
-        for (int i = 1; i == 1; i = i)
-        {
-            int firstValue, secondValue;
-
-            if (inputOperation != "+" && inputOperation != "-" && inputOperation != "*" && inputOperation != "/")
-            {
-                Console.WriteLine("Invalid operation, PesOS Calculator Closed.");
-                break;
-            }
-
-            Console.WriteLine($"Input two values to be ({inputOperation}).");
-
-            Console.Write("First Value: ");
-            if (!int.TryParse(Console.ReadLine(), out firstValue))
-            {
-                Console.WriteLine("Invalid input. Please enter a valid number.\n");
-                continue;
-            }
-
-            Console.Write("Second Value: ");
-            if (!int.TryParse(Console.ReadLine(), out secondValue))
-            {
-                Console.WriteLine("Invalid input. Please enter a valid number.\n");
-                continue;
-            }
-
-            switch (inputOperation)
-            {
-                case "+":
-                    Console.WriteLine($"The Sum of {firstValue} and {secondValue} is: {firstValue + secondValue}");
-                    break;
-                case "-":
-                    Console.WriteLine($"The Difference of {firstValue} and {secondValue} is: {firstValue - secondValue}");
-                    break;
-                case "*":
-                    Console.WriteLine($"The Product of {firstValue} and {secondValue} is: {firstValue * secondValue}");
-                    break;
-                case "/":
-                    if (secondValue != 0)
-                    {
-                        Console.WriteLine($"The Quotient of {firstValue} and {secondValue} is: {firstValue / secondValue}");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Cannot divide by zero.");
-                    }
-                    break;
-                default:
-                    Console.WriteLine("Invalid operation, PesOS Calculator Closed.");
-                    break;
-            }
-
-            Console.WriteLine("\nWould you like to use PesOS calculator again? Type 'Yes' or 'No'.\n");
-
-            for (int j = 1; j == 1; j = j)
-            {
-                Console.Write("Input: ");
-                var reCalculate = Console.ReadLine().Trim();
-
-                if (reCalculate == "No")
-                {
-                    Console.WriteLine("\nPesOS Calculator Closed");
-                    i = 0; j = 0;
-
-                }
-                else if (reCalculate == "Yes")
-                {
-                    i = 1; j = 0;
-                }
-                else
-                {
-                    Console.WriteLine("Please input either 'Yes' or 'No' only.\n");
-                    j = 1;
-                }
-            }
-        }
-    }
-
-    public class settings
-    {
-        public void FontColor(string[] args)
-        {
-            string[] availableColors = { "white", "black", "gray", "yellow", "red", "blue", "green", "magenta", "cyan",
-                    "darkred", "darkblue", "darkgreen", "darkmagenta", "darkcyan" };
-            string response = "";
-
-            if (args.Length > 0)
-            {
-                switch (args[0])
-                {
-                    case "white":
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine("The console's color has now changed to White");
-                        break;
-
-                    case "black":
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine("The console's color has now changed to Magenta");
-                        break;
-
-                    case "gray":
-                        Console.ForegroundColor = ConsoleColor.Gray;
-                        Console.WriteLine("The console's color has now changed to Gray");
-                        break;
-
-                    case "yellow":
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("The console's color has now changed to Yellow");
-                        break;
-
-                    case "red":
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("The console's color has now changed to Red");
-                        break;
-
-                    case "darkred":
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
-                        Console.WriteLine("The console's color has now changed to Cyan");
-                        break;
-
-                    case "blue":
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.WriteLine("The console's color has now changed to Blue");
-                        break;
-
-                    case "darkblue":
-                        Console.ForegroundColor = ConsoleColor.DarkBlue;
-                        Console.WriteLine("The console's color has now changed to Dark Blue");
-                        break;
-
-                    case "green":
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("The console's color has now changed to Green");
-                        break;
-
-                    case "darkgreen":
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.WriteLine("The console's color has now changed to Dark Green");
-                        break;
-
-                    case "magenta":
-                        Console.ForegroundColor = ConsoleColor.Magenta;
-                        Console.WriteLine("The console's color has now changed to Magenta");
-                        break;
-
-                    case "darkmagenta":
-                        Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                        Console.WriteLine("The console's color has now changed to Magenta");
-                        break;
-
-                    case "cyan":
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine("The console's color has now changed to Cyan");
-                        break;
-
-                    case "darkcyan":
-                        Console.ForegroundColor = ConsoleColor.DarkCyan;
-                        Console.WriteLine("The console's color has now changed to Magenta");
-                        break;
-
-                    default:
-                        response = "The color \"" + args[0] + "\" is not available";
-                        break;
-                }
-            }
-            else
-            {
-                Console.WriteLine("Please provide a color as an argument.");
-                PrintAvailableColors(availableColors);
-            }
-
-
-        }
-
-        public void BackgroundColor(string[] args)
-        {
-            string[] availableColors = {"white", "black", "gray", "yellow", "red", "blue", "green", "magenta", "cyan",
-                    "darkred", "darkblue", "darkgreen", "darkmagenta", "darkcyan" };
-            string response = "";
-
-            if (args.Length > 0)
-            {
-                switch (args[0])
-                {
-                    case "white":
-                        Console.BackgroundColor = ConsoleColor.White;
-                        Console.WriteLine("The console's color has now changed to White");
-                        break;
-
-                    case "black":
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.WriteLine("The console's color has now changed to Magenta");
-                        break;
-
-                    case "gray":
-                        Console.BackgroundColor = ConsoleColor.Gray;
-                        Console.WriteLine("The console's color has now changed to Gray");
-                        break;
-
-                    case "yellow":
-                        Console.BackgroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("The console's color has now changed to Yellow");
-                        break;
-
-                    case "red":
-                        Console.BackgroundColor = ConsoleColor.Red;
-                        Console.WriteLine("The console's color has now changed to Red");
-                        break;
-
-                    case "darkred":
-                        Console.BackgroundColor = ConsoleColor.DarkRed;
-                        Console.WriteLine("The console's color has now changed to Cyan");
-                        break;
-
-                    case "blue":
-                        Console.BackgroundColor = ConsoleColor.Blue;
-                        Console.WriteLine("The console's color has now changed to Blue");
-                        break;
-
-                    case "darkblue":
-                        Console.BackgroundColor = ConsoleColor.DarkBlue;
-                        Console.WriteLine("The console's color has now changed to Dark Blue");
-                        break;
-
-                    case "green":
-                        Console.BackgroundColor = ConsoleColor.Green;
-                        Console.WriteLine("The console's color has now changed to Green");
-                        break;
-
-                    case "darkgreen":
-                        Console.BackgroundColor = ConsoleColor.DarkGreen;
-                        Console.WriteLine("The console's color has now changed to Dark Green");
-                        break;
-
-                    case "magenta":
-                        Console.BackgroundColor = ConsoleColor.Magenta;
-                        Console.WriteLine("The console's color has now changed to Magenta");
-                        break;
-
-                    case "darkmagenta":
-                        Console.BackgroundColor = ConsoleColor.DarkMagenta;
-                        Console.WriteLine("The console's color has now changed to Magenta");
-                        break;
-
-                    case "cyan":
-                        Console.BackgroundColor = ConsoleColor.Cyan;
-                        Console.WriteLine("The console's color has now changed to Cyan");
-                        break;
-
-                    case "darkcyan":
-                        Console.BackgroundColor = ConsoleColor.DarkCyan;
-                        Console.WriteLine("The console's color has now changed to Magenta");
-                        break;
-
-                    default:
-                        response = "The color \"" + args[0] + "\" is not available";
-                        break;
-                }
-            }
-            else
-            {
-                Console.WriteLine("Please provide a color as an argument.");
-                PrintAvailableColors(availableColors);
-            }
-
-
-        }
-        public static void PrintAvailableColors(string[] colors)
-        {
-            Console.WriteLine("You can choose between these colors:");
-            foreach (var color in colors)
-            {
-                Console.WriteLine($"\t{color}");
-            }
-        }
-    }
-
-    public class SysInfo
-    {
-        public void SystemInfo()
-        {
-            Console.WriteLine("As the world embarks into the era of digitalization, innovation is the new currency. PLM EduSkolars' Operating System, or PesOS, is a personalized operating system developed by Alambra, J., Aragon, P., Banal, D., Beron, A., Bolocon, J., and De Guzman, J. Moreover, PesOS aims to innovate the lives of Filipinos through the aspect of tax calculation.");
-            Console.WriteLine("S.Y. 2023-2024\n");
-            Console.WriteLine("OS Name   : PesOS");
-            Console.WriteLine("Version   : 1.0.0");
-            Console.WriteLine(NetworkConfiguration.CurrentAddress?.ToString() ?? "146.168.1.78");
-        }
-
-    }
-}
