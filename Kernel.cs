@@ -367,7 +367,7 @@ namespace PesOS
                                 Console.WriteLine("Available Colors:");
                                 settings.PrintAvailableColors(availableColors);
 
-                                Console.Write("Enter the desired font color: ");
+                                Console.Write("Enter the desired background color: ");
                                 var backgroundColor = Console.ReadLine();
 
                                 mySettings.BackgroundColor(new string[] { backgroundColor });
