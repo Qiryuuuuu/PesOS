@@ -1,7 +1,7 @@
 ## I. Description of PesOS    
-       PesOS, an intuitive operating system paying homage to the Philippine Currency Pesos, is a testament to Filipino innovation proudly designed by a team of talented students from the Pamantasan ng Lungsod ng Maynila. Spearheaded by Joseph Alambra, Patrick Aragon, Daryll Banal, Anna Bianca Beron, Joniel Bolocon, and Jastine de Guzman, this Filipino-made OS was meticulously developed using the powerful programming language C#. 
+PesOS, an intuitive operating system paying homage to the Philippine Currency Pesos, is a testament to Filipino innovation proudly designed by a team of talented students from the Pamantasan ng Lungsod ng Maynila. Spearheaded by Joseph Alambra, Patrick Aragon, Daryll Banal, Anna Bianca Beron, Joniel Bolocon, and Jastine de Guzman, this Filipino-made OS was meticulously developed using the powerful programming language C#. 
 
-       PesOS seamlessly integrates technology into users' daily lives. Notably, its standout feature is a built-in tax calculator, allowing users to effortlessly compute their monthly income while factoring in the intricate details of government tax deductions. This unique functionality adds a practical and user-centric dimension to PesOS, enhancing its appeal for a diverse range of users navigating the complexities of financial management. 
+PesOS seamlessly integrates technology into users' daily lives. Notably, its standout feature is a built-in tax calculator, allowing users to effortlessly compute their monthly income while factoring in the intricate details of government tax deductions. This unique functionality adds a practical and user-centric dimension to PesOS, enhancing its appeal for a diverse range of users navigating the complexities of financial management. 
 
 
 ## II. Features of PesOS 
