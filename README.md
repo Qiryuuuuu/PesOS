@@ -17,7 +17,7 @@ PesOS seamlessly integrates technology into users' daily lives. Notably, its sta
         Interface: Basic command-line interface 
 
 ## III. Screenshots
-![PesOS](https://github.com/Qiryuuuuu/PesOS/assets/133493937/eeccb6b7-a0f4-4675-9cdd-391d1fbbe783)
+        ![PLMEdusckolarOS](https://github.com/Qiryuuuuu/PesOS/assets/133493937/39ba57aa-527b-4dcb-b999-99e4492b5f78)
 
 
 
