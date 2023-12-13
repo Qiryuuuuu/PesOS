@@ -15,3 +15,15 @@ PesOS seamlessly integrates technology into users' daily lives. Notably, its sta
         Calculator: Perform simple math calculations 
         Tax Calculator: Calculate taxes base on Philippines’ tax rate table in 2023 
         Interface: Basic command-line interface 
+
+## III. Screenshots
+        ![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/58489860-3daf-424e-807b-58f21bedc9ed)
+        ![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/50751b40-115c-454a-b83e-5328810f44cf)
+        ![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/d04a4a80-2cae-4f28-8a6e-c2deae35d16e)
+        ![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/80797545-f085-475f-a872-5412482edbb4)
+        ![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/6a566bf8-311a-4ae4-a6b3-84af483d29e0)
+        ![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/9465b77b-74e3-4a24-9869-68376b713584)
+
+
+
+
