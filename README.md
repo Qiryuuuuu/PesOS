@@ -8,7 +8,7 @@ PesOS, an intuitive operating system paying homage to the Philippine Currency Pe
 PesOS seamlessly integrates technology into users' daily lives. Notably, its standout feature is a built-in tax calculator, allowing users to effortlessly compute their monthly income while factoring in the intricate details of government tax deductions. This unique functionality adds a practical and user-centric dimension to PesOS, enhancing its appeal for a diverse range of users navigating the complexities of financial management. 
 
 
-II. Features of PesOS 
+II. Features of PesOS \n
       Boot: Start up PesOS 
       Clock: Display current time 
       Shutdown: Turn off computer 
