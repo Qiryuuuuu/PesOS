@@ -18,28 +18,13 @@ PesOS seamlessly integrates technology into users' daily lives. Notably, its sta
 
 
 ## III. Installation Guide
-1. Step 1: Go to the official website of cosmos and click download. A list of required modules and applications will be shown in order to download cosmos.
-![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/f9ddf49d-2871-4a8e-a382-6ed5b1cbfe21)
-
-2. Step 2: After installing the Visual Studio, download the .NET Core Tools
-![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/0a21dea2-93d9-4d4c-b5cb-1a12eb037663)
-
-3. Step 3: Download the NET Framework 6 Developer Pack by clicking the third pre-requisite. Check the desktop OS, if you’re using windows, go to the row of windows and click the x64 and continue with the installation after finishing its download
-![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/4c228a6b-367a-4362-a805-8fb6d9d7db4e)
-
-4. Step 4: Before downloading the Cosmos, make sure to download first a hypervisor to be able to run it.
-![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/d9291551-4f8b-423a-a71a-da1be63b502c)
-![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/efc08fe9-7d21-4f85-a3e7-70d4f8e3749c)
-
-5. Step 5: Download now the cosmos user kit. Just click the last pre-requisite on the website The Installer: Latest Release and scroll down and you will see the cosmos user kit. Proceed with the installation after downloading.
-![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/76ea171b-3d0b-4e31-a12d-09c87ca13aa1)
-
-6. Step 6: Check your visual studio if its successfully installed. Click create a new project.
-![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/e2374fb4-c936-489e-b673-87f4f12cc824)
-
-7. Step 7: Search cosmos and if you see this you can start creating your own OS.
-![image](https://github.com/Qiryuuuuu/PesOS/assets/133493937/6a823a1b-6f3f-4f2a-8ded-8cbf3e659264)
-
+        Step 1: Go to the official website of cosmos and click download. A list of required modules and applications will be shown in order to download cosmos.
+        Step 2: After installing the Visual Studio, download the .NET Core Tools
+        Step 3: Download the NET Framework 6 Developer Pack by clicking the third pre-requisite. Check the desktop OS, if you’re using windows, go to the row of windows and click the x64 and continue with the installation after finishing its download
+        Step 4: Before downloading the Cosmos, make sure to download first a hypervisor to be able to run it.
+        Step 5: Download now the cosmos user kit. Just click the last pre-requisite on the website The Installer: Latest Release and scroll down and you will see the cosmos user kit. Proceed with the installation after downloading.
+        Step 6: Check your visual studio if its successfully installed. Click create a new project.
+        Step 7: Search cosmos and if you see this you can start creating your own OS.
 
 
 ## IV. Screenshots
