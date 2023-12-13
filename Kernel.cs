@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
+using System.Text;
 using System.Threading;
 using Sys = Cosmos.System;
 
@@ -11,8 +13,7 @@ namespace PesOS
     {
         private List<User> users;
         private User currentUser;
-        private FileSystem fileSystem;
-        private MemoryManager memoryManager;
+
 
         private void ShowCenteredTitle(string title, int speed)
         {
@@ -51,9 +52,6 @@ namespace PesOS
         {
             users = new List<User>();
             currentUser = null;
-            fileSystem = new FileSystem();
-            // Initialize Memory Manager with a pool size of 1024 bytes
-            memoryManager = new MemoryManager(1024);
             // Create a sample user
             users.Add(new User("admin", "admin123"));
 
@@ -72,17 +70,7 @@ namespace PesOS
             Console.WriteLine("You have successfully logged-in to PesOS.");
             Console.WriteLine("Type 'help' to view available commands");
         }
-        private bool LogoutAndAuthenticate()
-        {
-            currentUser.Logout();
-            currentUser = null;
 
-            // Authenticate the user again
-            AuthenticateUser();
-
-            return currentUser != null;
-        }
-        
         // This method contains the main execution logic
         protected override void Run()
         {
@@ -96,18 +84,18 @@ namespace PesOS
                 switch (splitted[0])
                 {
                     case "help":
+                        Console.Clear();
                         Console.WriteLine("These are the available commands of PesOS:");
+                        Console.WriteLine("--------------------------------------------------------");
                         Console.WriteLine("help - displays a list of available commands");
-                        Console.WriteLine("sysinfo - displays the system information of PesOS");
                         Console.WriteLine("clock - displays the current date and time");
                         Console.WriteLine("tax - displays the available tax features");
-                        Console.WriteLine("file - displays the available command for file system");
                         Console.WriteLine("clear - clears the command line");
                         Console.WriteLine("restart - automatically restarts the operating system");
                         Console.WriteLine("shutdown - automatically shutdowns the operating system");
-                        Console.WriteLine("user - displays the available command for user profile");
+                        Console.WriteLine("sysinfo - displays the system information of PesOS");
                         Console.WriteLine("settings - displays the available system modifications");
-                        //add more for added features
+                        Console.WriteLine("--------------------------------------------------------");
                         break;
 
 
@@ -117,7 +105,9 @@ namespace PesOS
                         break;
 
                     case "tax":
+                        Console.Clear();
                         Console.WriteLine("These are the available tax features");
+                        Console.WriteLine("--------------------------------------------------------");
                         Console.WriteLine("0 - Back");
                         Console.WriteLine("1 - PesOS Calculator");
                         Console.WriteLine("2 - Tax Calculator");
@@ -127,6 +117,7 @@ namespace PesOS
 
                         if (calInput == "1")
                         {
+                            Console.Clear();
                             Console.Write("\nPesOS Calculator" + "\nInput your operation \n" +
                                 "Type '+' for Addition\n" +
                                 "Type '-' for Subtraction\n" +
@@ -141,27 +132,57 @@ namespace PesOS
 
                         else if (calInput == "2")
                         {
-                            Console.WriteLine("\nType 'taxtable' to display the 2023 taxtable and 'taxterms' for terminologies");
+                            Console.WriteLine("\nType 'taxtable' to display the Income Tax Rates and 'taxterms' for terminologies");
+
                             do
                             {
-                                Console.Write("Enter Annual Income: ");
+                                Console.Write("Enter Annual Gross Income: ");
                                 var incomeStr = Console.ReadLine();
 
                                 TaxCalculator taxCalculator = new TaxCalculator();
-
                                 taxCalculator.CalculateTax(incomeStr);
 
                                 Console.WriteLine("Do you want to calculate your tax? (Type 'Yes' or 'No')");
                                 Console.Write("input: ");
                                 var repeat = Console.ReadLine().Trim().ToLower();
 
-                                if (repeat != "yes" && repeat != "y")
+                                if (repeat == "no" || repeat == "n")
                                 {
+                                    Console.Clear();
+                                    Console.WriteLine("Tax Calculator closed");
+                                    Console.WriteLine("--------------------------------------------------------\n");
+                                    Console.WriteLine("Welcome to PesOS");
+                                    Console.WriteLine("Type 'help' to view available commands");
                                     break;
+                                }
+                                else if (repeat == "yes" || repeat == "y")
+                                {
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Invalid input. Please choose between 'Yes' or 'No' only.");
                                 }
 
                             } while (true);
                         }
+
+                        else if (calInput == "0") 
+                        { 
+                            Console.Clear();
+                            Console.WriteLine("Welcome to PesOS");
+                            Console.WriteLine("Type 'help' to view available commands");
+                            break;
+                        }
+
+                        else
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Please input a valid option");
+                            Console.WriteLine("--------------------------------------------------------\n");
+                            Console.WriteLine("Welcome to PesOS");
+                            Console.WriteLine("Type 'help' to view available commands");
+                        }
+                        
                         break;
 
                     case "clear":
@@ -186,222 +207,12 @@ namespace PesOS
                         }
                         break;
 
-                    case "file":
-                        Console.WriteLine("These are the available file system commands:");
-                        Console.WriteLine("0 - Back");
-                        Console.WriteLine("1 - Create File");
-                        Console.WriteLine("2 - Read File");
-                        Console.WriteLine("3 - Delete File");
-                        Console.WriteLine("4 - Create Directory");
-                        Console.WriteLine("5 - Change Directory");
-                        Console.WriteLine("6 - List Files");
-
-                        Console.Write("input: ");
-                        var fileInput = Console.ReadLine();
-                        if (fileInput == "0")
-                        {
-                            Console.Clear();
-                            Console.WriteLine("Welcome to PesOS");
-                            Console.WriteLine("Type 'help' to view available commands");
-                            break;
-                        }
-
-                        else if (fileInput == "1")
-                        {
-                            Console.Write("Enter File Name: ");
-                            string filename = Console.ReadLine();
-                            Console.Write("Enter File Content: ");
-                            string fileContent = Console.ReadLine();
-                            fileSystem.CreateFile(filename, fileContent);
-                        }
-
-                        else if (fileInput == "2")
-                        {
-                            Console.Write("Enter file name to read: ");
-                            string readFileName = Console.ReadLine();
-                            fileSystem.ReadFile(readFileName);
-                        }
-
-                        else if (fileInput == "3")
-                        {
-                            Console.Write("Enter file name to delete:");
-                            string deleteFileName = Console.ReadLine();
-                            fileSystem.DeleteFile(deleteFileName);
-                        }
-
-                        else if (fileInput == "4")
-                        {
-                            Console.Write("Enter directory name: ");
-                            string directoryName = Console.ReadLine();
-                            fileSystem.CreateDirectory(directoryName);
-                        }
-
-                        else if (fileInput == "5")
-                        {
-                            Console.Write("Enter directory name to change to: ");
-                            string changeToDirectoryName = Console.ReadLine();
-                            fileSystem.ChangeDirectory(changeToDirectoryName);
-                        }
-
-                        else if (fileInput == "6")
-                        {
-                            fileSystem.ListFilesAndDirectories();
-                        }
-
-                        else
-                        {
-                            Console.WriteLine("Choose valid option");
-                        }
-
-                        break;
-
-                    
-
-                    // Add these cases to properly integrate the file system command
-                    case "mkdir":
-                        if (splitted.Length > 1)
-                        {
-                            fileSystem.CreateDirectory(splitted[1]);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Usage: mkdir [directoryName]");
-                        }
-                        break;
-
-                    case "cd":
-                        if (splitted.Length > 1)
-                        {
-                            fileSystem.ChangeDirectory(splitted[1]);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Usage: cd [directoryName]");
-                        }
-                        break;
-
-                    case "ls":
-                        fileSystem.ListFilesAndDirectories();
-                        break;
-
-                    case "allocatememory":
-                        if (splitted.Length > 1)
-                        {
-                            int size;
-                            if (int.TryParse(splitted[1], out size))
-                            {
-                                int address = memoryManager.Allocate(size);
-                                Console.WriteLine($"Allocated {size} bytes at address {address}.");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Usage: allocatememory [size]");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Usage: allocatememory [size]");
-                        }
-                        break;
-
-                    case "freememory":
-                        if (splitted.Length > 1)
-                        {
-                            int address;
-                            if (int.TryParse(splitted[1], out address))
-                            {
-                                memoryManager.Free(address);
-                                Console.WriteLine($"Freed memory at address {address}.");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Usage: freememory [address]");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Usage: freememory [address]");
-                        }
-                        break;
-
-                    case "user":
-                        Console.WriteLine("These are the available user commands:");
-                        Console.WriteLine("0 - Back");
-                        Console.WriteLine("1 - Change Username");
-                        Console.WriteLine("2 - Change Password");
-                        Console.WriteLine("3 - Change Host Identity");
-                        Console.WriteLine("4 - Display User Info");
-                        Console.WriteLine("5 - Create New User");
-                        Console.WriteLine("6 - Logout");
-
-                        Console.Write("input: ");
-                        var userInput = Console.ReadLine();
-                        if (userInput == "0")
-                        {
-                            Console.Clear();
-                            Console.WriteLine("Welcome to PesOS");
-                            Console.WriteLine("Type 'help' to view available commands");
-                            break;
-                        }
-
-                        else if (userInput == "1")
-                        {
-                            Console.Write("Enter new username: ");
-                            string newUsername = Console.ReadLine();
-                            currentUser.ChangeUsername(newUsername);
-                        }
-
-                        else if (userInput == "2")
-                        {
-                            Console.Write("Enter new password: ");
-                            string newPassword = Console.ReadLine();
-                            currentUser.ChangePassword(newPassword);
-                        }
-
-                        else if (userInput == "3")
-                        {
-                            currentUser.ChangeHostIdentity();
-                        }
-
-                        else if (userInput == "4")
-                        {
-                            DisplayUserInfo();
-                        }
-
-                        else if (userInput == "5")
-                        {
-                            Console.Write("Enter new username: ");
-                            string createUsername = Console.ReadLine();
-                            Console.Write("Enter password: ");
-                            string createPassword = Console.ReadLine();
-
-                            // Create a new user and log them in
-                            currentUser = User.CreateUser(createUsername, createPassword);
-                            Console.WriteLine($"User {createUsername} created and logged in.");
-                        }
-
-                        else if (userInput == "6")
-                        {
-                            if (LogoutAndAuthenticate())
-                            {
-                                Console.WriteLine($"Welcome back, {currentUser.Username}!");
-                            }
-                        }
-
-                        else
-                        {
-                            Console.WriteLine("Choose valid option");
-                        }
-
-                        break;
-
-
                     case "settings":
-                        string[] availableColors = { "white", "black", "gray", "yellow", "red", "blue", "green", "magenta", "cyan",
+                        string[] availableColors = { "white", "black", "gray", "red", "blue", "green", "magenta", "cyan",
                          "darkred", "darkblue", "darkgreen", "darkmagenta", "darkcyan" };
 
                         Console.WriteLine("0 - Back");
-                        Console.WriteLine("1 - Change color\n");
+                        Console.WriteLine("1 - Change Color\n");
                         Console.Write("input: ");
                         var setInput = Console.ReadLine();
 
@@ -501,16 +312,16 @@ namespace PesOS
         private void logoLoadingScreen()
         {
             string text = @"                                                                    
-             ++++                               +++-                      
-            ++-------                        ++-+++---++      +++++----     
-           ++-----------                  ++------------    ++----------   
-           +++--   ---++                  ++------+------  ++----- +-----  
-           ++----------- ++++++ +++++++  ++-----    ++---+  +------++      
-            ++--------   +++    +++   ++ ++-----    ++----- ++----------   
-            ++----++     ++++++ ++++++++   ++----++++----   +++    +-----  
-            ++---        +++    ++   +++  ++-------------  ++-----++-----  
-            ++---        ++++++  +++++++    +- +-----+--    ++----------   
-                                                ++--            -----      
+            ++++                               +++-                      
+           ++-------                        ++-+++---++      +++++----     
+          ++-----------                  ++------------    ++----------   
+          +++--   ---++                  ++------+------  ++----- +-----  
+          ++----------- ++++++ +++++++  ++-----    ++---+  +------++      
+           ++--------   +++    +++   ++ ++-----    ++----- ++----------   
+           ++----++     ++++++ ++++++++   ++---++++-----   +++    +-----  
+           ++---        +++    ++   +++  ++-------------  ++-----++-----  
+           ++---        ++++++  +++++++    +- +-----+--    ++----------   
+                                               ++--            -----      
                                                                 
 
 
@@ -561,7 +372,7 @@ namespace PesOS
 
         private void AuthenticateUser()
         {
-            Console.WriteLine("PesOS requires an authentication");
+            Console.WriteLine("PesOS requires authentication");
 
             int maxAttempts = 5;
             int attempts = 0;
@@ -570,6 +381,7 @@ namespace PesOS
             {
                 Console.Write("Enter username: ");
                 string username = Console.ReadLine();
+
                 Console.Write("Enter password: ");
                 string password = Console.ReadLine();
 
@@ -586,7 +398,7 @@ namespace PesOS
 
                     if (attempts == maxAttempts)
                     {
-                        Console.WriteLine("Max attempts has been reached. System will restart");
+                        Console.WriteLine("Max attempts have been reached. The system will restart.");
                         Reboot();
                     }
                 }
@@ -598,25 +410,9 @@ namespace PesOS
                     break;
                 }
             }
-
         }
-        private void DisplayUserInfo()
-        {
-            if (currentUser != null)
-            {
-                currentUser.DisplayUserInfo();
-            }
-            else
-            {
-                Console.WriteLine("No user is currently logged in.");
-            }
-
-
-        }
-
 
     }
 }
-
 
 

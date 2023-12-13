@@ -15,7 +15,7 @@ namespace PesOS
             Console.WriteLine("S.Y. 2023-2024\n");
             Console.WriteLine("OS Name   : PesOS");
             Console.WriteLine("Version   : 1.0.0");
-            Console.WriteLine(NetworkConfiguration.CurrentAddress?.ToString() ?? "146.168.1.78");
+            Console.WriteLine("IP        : " + (NetworkConfiguration.CurrentAddress?.ToString() ?? "146.168.1.78"));
         }
 
     }

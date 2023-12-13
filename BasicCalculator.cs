@@ -12,27 +12,31 @@ namespace PesOS
     {
         public void calculator(string inputOperation)
         {
-            for (int i = 1; i == 1; i = i)
+            for (decimal i = 1; i == 1; i = i)
             {
-                int firstValue, secondValue;
+                decimal firstValue, secondValue;
 
                 if (inputOperation != "+" && inputOperation != "-" && inputOperation != "*" && inputOperation != "/")
                 {
+                    Console.Clear(); 
                     Console.WriteLine("Invalid operation, PesOS Calculator Closed.");
+                    Console.WriteLine("--------------------------------------------------------");
+                    Console.WriteLine("Welcome to PesOS");
+                    Console.WriteLine("Type 'help' to view available commands");
                     break;
                 }
 
                 Console.WriteLine($"Input two values to be ({inputOperation}).");
 
                 Console.Write("First Value: ");
-                if (!int.TryParse(Console.ReadLine(), out firstValue))
+                if (!decimal.TryParse(Console.ReadLine(), out firstValue))
                 {
                     Console.WriteLine("Invalid input. Please enter a valid number.\n");
                     continue;
                 }
 
                 Console.Write("Second Value: ");
-                if (!int.TryParse(Console.ReadLine(), out secondValue))
+                if (!decimal.TryParse(Console.ReadLine(), out secondValue))
                 {
                     Console.WriteLine("Invalid input. Please enter a valid number.\n");
                     continue;
@@ -66,14 +70,18 @@ namespace PesOS
 
                 Console.WriteLine("\nWould you like to use PesOS calculator again? Type 'Yes' or 'No'.\n");
 
-                for (int j = 1; j == 1; j = j)
+                for (decimal j = 1; j == 1; j = j)
                 {
                     Console.Write("Input: ");
-                    var reCalculate = Console.ReadLine().Trim();
+                    var reCalculate = Console.ReadLine().Trim().ToLower();
 
                     if (reCalculate == "No")
                     {
-                        Console.WriteLine("\nPesOS Calculator Closed");
+                        Console.Clear();
+                        Console.WriteLine("PesOS Calculator Closed");
+                        Console.WriteLine("--------------------------------------------------------\n");
+                        Console.WriteLine("Welcome to PesOS");
+                        Console.WriteLine("Type 'help' to view available commands");
                         i = 0; j = 0;
 
                     }
@@ -94,6 +102,12 @@ namespace PesOS
     {
         public void CalculateTax(string incomeStr)
         {
+            if (string.IsNullOrWhiteSpace(incomeStr))
+            {
+                Console.WriteLine("Invalid input. Please enter a valid value.\n");
+                return;
+            }
+
             if (int.TryParse(incomeStr, out int income))
             {
                 if (income >= 0 && income <= 250000)
@@ -148,17 +162,16 @@ namespace PesOS
                 taxTerminologies();
             }
 
-
             else
             {
-                Console.WriteLine("Invalid input. Please enter a valid number for income.\n");
+                Console.WriteLine("Invalid input. Please enter a valid value.\n");
             }
 
         }
 
         public void taxTable()
         {
-            Console.WriteLine("\nThe Income Tax Table - Individual");
+            Console.WriteLine("\nIncome Tax Rates");
             Console.WriteLine("-------------------------------------------------------------------------");
             Console.WriteLine("|   Over    | But not Over |                 Tax Rate                   |");
             Console.WriteLine("-------------------------------------------------------------------------");

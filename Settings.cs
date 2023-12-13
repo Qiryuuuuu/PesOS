@@ -10,7 +10,7 @@ namespace PesOS
     {
         public void FontColor(string[] args)
         {
-            string[] availableColors = { "white", "black", "gray", "yellow", "red", "blue", "green", "magenta", "cyan",
+            string[] availableColors = { "white", "black", "gray", "red", "blue", "green", "magenta", "cyan",
                     "darkred", "darkblue", "darkgreen", "darkmagenta", "darkcyan" };
             string response = "";
 
@@ -32,12 +32,6 @@ namespace PesOS
                         Console.ForegroundColor = ConsoleColor.Gray;
                         Console.WriteLine("The console's color has now changed to Gray");
                         break;
-
-                    case "yellow":
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("The console's color has now changed to Yellow");
-                        break;
-
                     case "red":
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("The console's color has now changed to Red");
@@ -45,7 +39,7 @@ namespace PesOS
 
                     case "darkred":
                         Console.ForegroundColor = ConsoleColor.DarkRed;
-                        Console.WriteLine("The console's color has now changed to Cyan");
+                        Console.WriteLine("The console's color has now changed to Dark Red");
                         break;
 
                     case "blue":
@@ -104,7 +98,7 @@ namespace PesOS
 
         public void BackgroundColor(string[] args)
         {
-            string[] availableColors = {"white", "black", "gray", "yellow", "red", "blue", "green", "magenta", "cyan",
+            string[] availableColors = {"white", "black", "gray", "red", "blue", "green", "magenta", "cyan",
                     "darkred", "darkblue", "darkgreen", "darkmagenta", "darkcyan" };
             string response = "";
 
@@ -126,12 +120,6 @@ namespace PesOS
                         Console.BackgroundColor = ConsoleColor.Gray;
                         Console.WriteLine("The console's color has now changed to Gray");
                         break;
-
-                    case "yellow":
-                        Console.BackgroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("The console's color has now changed to Yellow");
-                        break;
-
                     case "red":
                         Console.BackgroundColor = ConsoleColor.Red;
                         Console.WriteLine("The console's color has now changed to Red");
