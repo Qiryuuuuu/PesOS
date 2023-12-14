@@ -75,7 +75,7 @@ namespace PesOS
                     Console.Write("Input: ");
                     var reCalculate = Console.ReadLine().Trim().ToLower();
 
-                    if (reCalculate == "No")
+                    if (reCalculate == "no")
                     {
                         Console.Clear();
                         Console.WriteLine("PesOS Calculator Closed");
@@ -85,7 +85,7 @@ namespace PesOS
                         i = 0; j = 0;
 
                     }
-                    else if (reCalculate == "Yes")
+                    else if (reCalculate == "yes")
                     {
                         i = 1; j = 0;
                     }
